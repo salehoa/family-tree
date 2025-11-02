@@ -186,16 +186,13 @@ function showAddSonModal() {
     hideContextMenu();
     
     const firstName = prompt('أدخل الاسم الأول للابن:');
-    if (!firstName) return;
-    
-    const lastName = prompt('أدخل اسم العائلة (اختياري):');
-    const birthDate = prompt('تاريخ الميلاد (YYYY-MM-DD) (اختياري):');
+    if (!firstName || firstName.trim() === '') {
+        return;
+    }
     
     addMember(currentFamilyId, {
-        first_name: firstName,
-        last_name: lastName,
-        father_id: selectedMemberId,
-        birth_date: birthDate
+        first_name: firstName.trim(),
+        father_id: selectedMemberId
     });
 }
 
