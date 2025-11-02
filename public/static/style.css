@@ -44,7 +44,7 @@ body {
     flex-direction: column;
     align-items: center;
     position: relative;
-    margin-bottom: 85px; /* زيادة بمقدار 5px إضافية (من 80px إلى 85px) */
+    margin-bottom: 87px; /* زيادة 2px إضافية (من 85px إلى 87px) */
 }
 
 /* Vertical line from parent to children */
@@ -55,10 +55,10 @@ body {
 .tree-node-wrapper:has(.children-container) > .member-card::after {
     content: '';
     position: absolute;
-    left: calc(50% + 5px); /* تحريك لليمين بمقدار 5px */
-    bottom: -85px; /* نزول إضافي بمقدار 5px (من -80px إلى -85px) */
+    left: calc(50% + 2px); /* تحريك لليمين 2px (كان 5px، تحرك 3px لليسار) */
+    bottom: -87px; /* نزول إضافي 2px (من -85px إلى -87px) */
     width: 4px;
-    height: 85px; /* زيادة الطول بمقدار 5px (من 80px إلى 85px) */
+    height: 87px; /* زيادة الطول 2px (من 85px إلى 87px) */
     background-color: #3b82f6;
     transform: translateX(-50%);
 }
@@ -67,8 +67,8 @@ body {
     display: flex;
     flex-direction: row;
     gap: 60px; /* إعادة إلى 60px */
-    margin-top: 85px; /* زيادة بمقدار 5px (من 80px إلى 85px) */
-    padding-top: 85px; /* زيادة بمقدار 5px (من 80px إلى 85px) */
+    margin-top: 87px; /* زيادة 2px إضافية (من 85px إلى 87px) */
+    padding-top: 87px; /* زيادة 2px إضافية (من 85px إلى 87px) */
     position: relative;
     align-items: flex-start;
 }
@@ -95,9 +95,9 @@ body {
     content: '';
     position: absolute;
     left: 50%;
-    top: -85px; /* تعديل لمطابقة padding-top الجديد */
+    top: -87px; /* تعديل لمطابقة padding-top الجديد */
     width: 4px;
-    height: 85px; /* زيادة بمقدار 5px */
+    height: 87px; /* زيادة 2px إضافية */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
@@ -386,19 +386,19 @@ body {
     }
     
     .tree-node-wrapper {
-        margin-bottom: 65px; /* زيادة بمقدار 5px */
+        margin-bottom: 67px; /* زيادة 2px إضافية */
     }
     
     .children-container {
         gap: 40px; /* إعادة إلى 40px - المسافة الأفقية */
-        margin-top: 65px; /* زيادة بمقدار 5px */
-        padding-top: 65px; /* زيادة بمقدار 5px */
+        margin-top: 67px; /* زيادة 2px إضافية */
+        padding-top: 67px; /* زيادة 2px إضافية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 65px; /* زيادة بمقدار 5px */
-        bottom: -65px; /* زيادة بمقدار 5px */
-        left: calc(50% + 5px); /* تحريك لليمين */
+        height: 67px; /* زيادة 2px إضافية */
+        bottom: -67px; /* زيادة 2px إضافية */
+        left: calc(50% + 2px); /* تحريك لليسار 3px (من 5px إلى 2px) */
     }
     
     .children-container::before {
@@ -408,8 +408,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -65px; /* تعديل لمطابقة padding-top */
-        height: 65px; /* زيادة بمقدار 5px */
+        top: -67px; /* تعديل لمطابقة padding-top */
+        height: 67px; /* زيادة 2px إضافية */
     }
     
     .member-card {
@@ -447,20 +447,20 @@ body {
     }
     
     .tree-node-wrapper {
-        margin-bottom: 55px; /* زيادة بمقدار 5px */
+        margin-bottom: 57px; /* زيادة 2px إضافية */
     }
     
     .children-container {
         gap: 30px; /* إعادة إلى 30px - المسافة الأفقية */
-        margin-top: 55px; /* زيادة بمقدار 5px */
-        padding-top: 55px; /* زيادة بمقدار 5px */
+        margin-top: 57px; /* زيادة 2px إضافية */
+        padding-top: 57px; /* زيادة 2px إضافية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 55px; /* زيادة بمقدار 5px */
-        bottom: -55px; /* زيادة بمقدار 5px */
+        height: 57px; /* زيادة 2px إضافية */
+        bottom: -57px; /* زيادة 2px إضافية */
         width: 3px;
-        left: calc(50% + 5px); /* تحريك لليمين */
+        left: calc(50% + 2px); /* تحريك لليسار 3px */
     }
     
     .children-container::before {
@@ -471,8 +471,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -55px; /* تعديل لمطابقة padding-top */
-        height: 55px; /* زيادة بمقدار 5px */
+        top: -57px; /* تعديل لمطابقة padding-top */
+        height: 57px; /* زيادة 2px إضافية */
         width: 3px;
     }
     
@@ -524,20 +524,20 @@ body {
     }
     
     .tree-node-wrapper {
-        margin-bottom: 45px; /* زيادة بمقدار 5px */
+        margin-bottom: 47px; /* زيادة 2px إضافية */
     }
     
     .children-container {
         gap: 20px; /* إعادة إلى 20px - المسافة الأفقية */
-        margin-top: 45px; /* زيادة بمقدار 5px */
-        padding-top: 45px; /* زيادة بمقدار 5px */
+        margin-top: 47px; /* زيادة 2px إضافية */
+        padding-top: 47px; /* زيادة 2px إضافية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 45px; /* زيادة بمقدار 5px */
-        bottom: -45px; /* زيادة بمقدار 5px */
+        height: 47px; /* زيادة 2px إضافية */
+        bottom: -47px; /* زيادة 2px إضافية */
         width: 2px;
-        left: calc(50% + 5px); /* تحريك لليمين */
+        left: calc(50% + 2px); /* تحريك لليسار 3px */
     }
     
     .children-container::before {
@@ -548,8 +548,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -45px; /* تعديل لمطابقة padding-top */
-        height: 45px; /* زيادة بمقدار 5px */
+        top: -47px; /* تعديل لمطابقة padding-top */
+        height: 47px; /* زيادة 2px إضافية */
         width: 2px;
     }
     
@@ -605,19 +605,19 @@ body {
     }
     
     .tree-node-wrapper {
-        margin-bottom: 40px; /* زيادة بمقدار 5px */
+        margin-bottom: 42px; /* زيادة 2px إضافية */
     }
     
     .children-container {
         gap: 15px; /* إعادة إلى 15px - المسافة الأفقية */
-        margin-top: 40px; /* زيادة بمقدار 5px */
-        padding-top: 40px; /* زيادة بمقدار 5px */
+        margin-top: 42px; /* زيادة 2px إضافية */
+        padding-top: 42px; /* زيادة 2px إضافية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 40px; /* زيادة بمقدار 5px */
-        bottom: -40px; /* زيادة بمقدار 5px */
-        left: calc(50% + 5px); /* تحريك لليمين */
+        height: 42px; /* زيادة 2px إضافية */
+        bottom: -42px; /* زيادة 2px إضافية */
+        left: calc(50% + 2px); /* تحريك لليسار 3px */
     }
     
     .children-container::before {
@@ -627,8 +627,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -40px; /* تعديل لمطابقة padding-top */
-        height: 40px; /* زيادة بمقدار 5px */
+        top: -42px; /* تعديل لمطابقة padding-top */
+        height: 42px; /* زيادة 2px إضافية */
     }
     
     .member-card {
