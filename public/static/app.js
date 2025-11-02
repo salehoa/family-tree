@@ -183,6 +183,8 @@ function hideContextMenu() {
 }
 
 function showAddSonModal() {
+    // حفظ معرّف الأب قبل إخفاء القائمة
+    const fatherId = selectedMemberId;
     hideContextMenu();
     
     const firstName = prompt('أدخل الاسم الأول للابن:');
@@ -192,11 +194,13 @@ function showAddSonModal() {
     
     addMember(currentFamilyId, {
         first_name: firstName.trim(),
-        father_id: selectedMemberId
+        father_id: fatherId
     });
 }
 
 function showUploadPhotoModal() {
+    // حفظ معرّف العضو قبل إخفاء القائمة
+    const memberId = selectedMemberId;
     hideContextMenu();
     
     const input = document.createElement('input');
@@ -205,7 +209,7 @@ function showUploadPhotoModal() {
     input.onchange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            await uploadPhoto(selectedMemberId, file);
+            await uploadPhoto(memberId, file);
         }
     };
     input.click();
