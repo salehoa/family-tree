@@ -250,6 +250,43 @@ async function uploadPhoto(memberId, file) {
     }
 }
 
+// Delete member function
+async function deleteMember() {
+    // حفظ معرّف العضو قبل إخفاء القائمة
+    const memberId = selectedMemberId;
+    hideContextMenu();
+    
+    // التحقق من تسجيل الدخول
+    if (!currentUser) {
+        alert('يجب تسجيل الدخول أولاً');
+        return;
+    }
+    
+    // تأكيد الحذف
+    const confirmed = confirm('هل أنت متأكد من حذف هذا العضو؟\n\nتحذير: سيتم حذف جميع الأبناء والأحفاد المرتبطين به أيضاً!');
+    if (!confirmed) {
+        return;
+    }
+    
+    try {
+        await axios.delete(
+            `${API_BASE}/families/${currentFamilyId}/members/${memberId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        );
+        
+        // Reload tree
+        await loadFamilyTree(currentFamilyId);
+        alert('تم حذف العضو بنجاح');
+    } catch (error) {
+        alert('فشل حذف العضو. تحقق من الصلاحيات.');
+        console.error('Delete error:', error);
+    }
+}
+
 // Zoom functions
 function zoomIn() {
     zoomLevel = Math.min(zoomLevel + 0.1, 3);
@@ -556,6 +593,10 @@ function renderFamilyTree() {
             <div class="context-menu-item" onclick="showUploadPhotoModal()">
                 <i class="fas fa-camera"></i>
                 <span>تحميل صورة</span>
+            </div>
+            <div class="context-menu-item danger" onclick="deleteMember()">
+                <i class="fas fa-trash"></i>
+                <span>حذف</span>
             </div>
         </div>
     `;
