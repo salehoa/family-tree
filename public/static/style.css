@@ -1,1 +1,104 @@
-h1 { font-family: Arial, Helvetica, sans-serif; }
+/* Custom styles for Family Tree App */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tree-node {
+    transition: all 0.3s ease;
+}
+
+.tree-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation for modals */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#loginModal > div,
+#familyModal > div {
+    animation: fadeIn 0.3s ease;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+    text-align: right;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Gender colors */
+.male-color {
+    color: #3b82f6;
+}
+
+.female-color {
+    color: #ec4899;
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .tree-node {
+        margin-bottom: 1rem;
+    }
+    
+    #familyModal > div {
+        max-width: 95%;
+        margin: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    header,
+    #authButtons,
+    #userMenu,
+    button {
+        display: none;
+    }
+    
+    .tree-node {
+        break-inside: avoid;
+    }
+}

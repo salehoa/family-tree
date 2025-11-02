@@ -331,18 +331,7 @@ app.get('/', (c) => {
         <title>شجرة العائلة</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-        <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
-            .tree-node {
-                transition: all 0.3s ease;
-            }
-            .tree-node:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-        </style>
+        <link href="/static/style.css" rel="stylesheet">
     </head>
     <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
         <!-- Header -->
