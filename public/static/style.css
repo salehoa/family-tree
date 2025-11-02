@@ -95,9 +95,9 @@ body {
     content: '';
     position: absolute;
     left: 50%;
-    top: -2px; /* يرتفع قليلاً ليلامس الخط الأفقي */
+    top: -80px; /* يبدأ من موضع الخط الأفقي (سالب padding-top) */
     width: 4px;
-    height: calc(80px + 2px); /* المسافة من الخط الأفقي إلى البطاقات + التعويض */
+    height: 80px; /* المسافة من الخط الأفقي إلى البطاقات */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
@@ -407,8 +407,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -2px; /* يرتفع قليلاً ليلامس الخط الأفقي */
-        height: calc(60px + 2px);
+        top: -60px; /* يبدأ من موضع الخط الأفقي */
+        height: 60px;
     }
     
     .member-card {
@@ -469,8 +469,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -1.5px; /* يرتفع قليلاً ليلامس الخط الأفقي */
-        height: calc(50px + 1.5px);
+        top: -50px; /* يبدأ من موضع الخط الأفقي */
+        height: 50px;
         width: 3px;
     }
     
@@ -545,8 +545,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -1px; /* يرتفع قليلاً ليلامس الخط الأفقي */
-        height: calc(40px + 1px);
+        top: -40px; /* يبدأ من موضع الخط الأفقي */
+        height: 40px;
         width: 2px;
     }
     
@@ -623,8 +623,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -1px; /* يرتفع قليلاً ليلامس الخط الأفقي */
-        height: calc(35px + 1px);
+        top: -35px; /* يبدأ من موضع الخط الأفقي */
+        height: 35px;
     }
     
     .member-card {
