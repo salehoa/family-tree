@@ -914,7 +914,7 @@ function showAddUserForm() {
 
 async function createUser(username, password, role) {
     try {
-        await axios.post(`${API_BASE}/admin/users`, {
+        const response = await axios.post(`${API_BASE}/admin/users`, {
             username,
             password,
             role
@@ -922,11 +922,22 @@ async function createUser(username, password, role) {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
         });
         
+        console.log('User created successfully:', response.data);
         alert('تم إنشاء المستخدم بنجاح');
         await loadAdminData();
     } catch (error) {
         console.error('Error creating user:', error);
-        alert('فشل إنشاء المستخدم. ربما اسم المستخدم مستخدم بالفعل.');
+        console.error('Error details:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+        
+        let errorMessage = 'فشل إنشاء المستخدم.';
+        if (error.response?.status === 409 || error.response?.data?.error?.includes('UNIQUE')) {
+            errorMessage = 'اسم المستخدم موجود بالفعل. الرجاء اختيار اسم آخر.';
+        } else if (error.response?.data?.error) {
+            errorMessage = `خطأ: ${error.response.data.error}`;
+        }
+        
+        alert(errorMessage);
     }
 }
 

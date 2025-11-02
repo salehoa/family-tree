@@ -378,13 +378,37 @@ app.get('/api/admin/users', authMiddleware, adminMiddleware, async (c) => {
 
 // إنشاء مستخدم جديد
 app.post('/api/admin/users', authMiddleware, adminMiddleware, async (c) => {
-  const { username, password, role } = await c.req.json()
-  
-  const result = await c.env.DB.prepare(
-    'INSERT INTO users (username, password, role) VALUES (?, ?, ?) RETURNING id, username, role, created_at'
-  ).bind(username, password, role).first()
-  
-  return c.json(result)
+  try {
+    const { username, password, role } = await c.req.json()
+    
+    // التحقق من أن الحقول مطلوبة
+    if (!username || !password || !role) {
+      return c.json({ error: 'Username, password, and role are required' }, 400)
+    }
+    
+    // التحقق من أن role صحيح
+    if (role !== 'admin' && role !== 'user') {
+      return c.json({ error: 'Role must be either "admin" or "user"' }, 400)
+    }
+    
+    // التحقق من عدم وجود المستخدم
+    const existingUser = await c.env.DB.prepare(
+      'SELECT id FROM users WHERE username = ?'
+    ).bind(username).first()
+    
+    if (existingUser) {
+      return c.json({ error: 'Username already exists' }, 409)
+    }
+    
+    const result = await c.env.DB.prepare(
+      'INSERT INTO users (username, password, role) VALUES (?, ?, ?) RETURNING id, username, role, created_at'
+    ).bind(username, password, role).first()
+    
+    return c.json(result)
+  } catch (error: any) {
+    console.error('Error creating user:', error)
+    return c.json({ error: 'Failed to create user: ' + error.message }, 500)
+  }
 })
 
 // تحديث مستخدم (كلمة المرور)
