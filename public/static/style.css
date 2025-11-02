@@ -67,30 +67,31 @@ body {
     display: flex;
     flex-direction: row;
     gap: 60px; /* إعادة إلى 60px */
-    margin-top: 80px; /* زيادة من 40px إلى 80px - المسافة العمودية */
+    margin-top: 80px; /* المسافة من الخط الأفقي إلى البطاقات */
+    padding-top: 80px; /* مساحة للخطوط العمودية */
     position: relative;
     align-items: flex-start;
 }
 
-/* Horizontal line connecting siblings */
+/* Horizontal line connecting siblings - at bottom of parent's vertical line */
 .children-container::before {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    top: -80px; /* زيادة من -40px إلى -80px */
+    top: 0; /* في نهاية الخط النازل من الأب */
     height: 4px;
     background-color: #3b82f6;
 }
 
-/* Vertical lines dropping to each sibling */
+/* Vertical lines dropping to each sibling - from horizontal line to cards */
 .children-container > .tree-node-wrapper::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: -80px; /* زيادة من -40px إلى -80px */
+    top: 0; /* يبدأ من الخط الأفقي */
     width: 4px;
-    height: 80px; /* زيادة من 40px إلى 80px */
+    height: 80px; /* المسافة من الخط الأفقي إلى البطاقات */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
@@ -384,21 +385,22 @@ body {
     
     .children-container {
         gap: 40px; /* إعادة إلى 40px - المسافة الأفقية */
-        margin-top: 60px; /* زيادة من 30px إلى 60px - المسافة العمودية */
+        margin-top: 60px;
+        padding-top: 60px; /* مساحة للخطوط العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 60px; /* زيادة من 30px إلى 60px */
-        bottom: -60px; /* زيادة من -30px إلى -60px */
+        height: 60px;
+        bottom: -60px;
     }
     
     .children-container::before {
-        top: -60px; /* زيادة من -30px إلى -60px */
+        top: 0; /* في نهاية الخط النازل */
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -60px; /* زيادة من -30px إلى -60px */
-        height: 60px; /* زيادة من 30px إلى 60px */
+        top: 0; /* يبدأ من الخط الأفقي */
+        height: 60px;
     }
     
     .member-card {
@@ -441,23 +443,24 @@ body {
     
     .children-container {
         gap: 30px; /* إعادة إلى 30px - المسافة الأفقية */
-        margin-top: 50px; /* زيادة من 25px إلى 50px - المسافة العمودية */
+        margin-top: 50px;
+        padding-top: 50px; /* مساحة للخطوط العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 50px; /* زيادة من 25px إلى 50px */
-        bottom: -50px; /* زيادة من -25px إلى -50px */
+        height: 50px;
+        bottom: -50px;
         width: 3px;
     }
     
     .children-container::before {
-        top: -50px; /* زيادة من -25px إلى -50px */
+        top: 0; /* في نهاية الخط النازل */
         height: 3px;
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -50px; /* زيادة من -25px إلى -50px */
-        height: 50px; /* زيادة من 25px إلى 50px */
+        top: 0; /* يبدأ من الخط الأفقي */
+        height: 50px;
         width: 3px;
     }
     
@@ -514,23 +517,24 @@ body {
     
     .children-container {
         gap: 20px; /* إعادة إلى 20px - المسافة الأفقية */
-        margin-top: 40px; /* زيادة من 20px إلى 40px - المسافة العمودية */
+        margin-top: 40px;
+        padding-top: 40px; /* مساحة للخطوط العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 40px; /* زيادة من 20px إلى 40px */
-        bottom: -40px; /* زيادة من -20px إلى -40px */
+        height: 40px;
+        bottom: -40px;
         width: 2px;
     }
     
     .children-container::before {
-        top: -40px; /* زيادة من -20px إلى -40px */
+        top: 0; /* في نهاية الخط النازل */
         height: 2px;
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -40px; /* زيادة من -20px إلى -40px */
-        height: 40px; /* زيادة من 20px إلى 40px */
+        top: 0; /* يبدأ من الخط الأفقي */
+        height: 40px;
         width: 2px;
     }
     
@@ -591,21 +595,22 @@ body {
     
     .children-container {
         gap: 15px; /* إعادة إلى 15px - المسافة الأفقية */
-        margin-top: 35px; /* زيادة من 18px إلى 35px - المسافة العمودية */
+        margin-top: 35px;
+        padding-top: 35px; /* مساحة للخطوط العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 35px; /* زيادة من 18px إلى 35px */
-        bottom: -35px; /* زيادة من -18px إلى -35px */
+        height: 35px;
+        bottom: -35px;
     }
     
     .children-container::before {
-        top: -35px; /* زيادة من -18px إلى -35px */
+        top: 0; /* في نهاية الخط النازل */
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -35px; /* زيادة من -18px إلى -35px */
-        height: 35px; /* زيادة من 18px إلى 35px */
+        top: 0; /* يبدأ من الخط الأفقي */
+        height: 35px;
     }
     
     .member-card {
