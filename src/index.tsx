@@ -198,6 +198,38 @@ app.put('/api/families/:id', authMiddleware, async (c) => {
   return c.json(result)
 })
 
+// حذف عائلة
+app.delete('/api/families/:id', authMiddleware, async (c) => {
+  const user = c.get('user')
+  const familyId = c.req.param('id')
+  
+  // التحقق من الصلاحيات - يجب أن يكون admin أو صاحب صلاحية التحرير
+  const permission = await c.env.DB.prepare(
+    'SELECT * FROM family_permissions WHERE user_id = ? AND family_id = ? AND can_edit = 1'
+  ).bind(user.id, familyId).first()
+  
+  if (!permission && user.role !== 'admin') {
+    return c.json({ error: 'No permission to delete this family' }, 403)
+  }
+  
+  // حذف جميع أعضاء العائلة أولاً
+  await c.env.DB.prepare(
+    'DELETE FROM family_members WHERE family_id = ?'
+  ).bind(familyId).run()
+  
+  // حذف جميع الصلاحيات المرتبطة بالعائلة
+  await c.env.DB.prepare(
+    'DELETE FROM family_permissions WHERE family_id = ?'
+  ).bind(familyId).run()
+  
+  // حذف العائلة نفسها
+  await c.env.DB.prepare(
+    'DELETE FROM families WHERE id = ?'
+  ).bind(familyId).run()
+  
+  return c.json({ success: true, message: 'Family deleted successfully' })
+})
+
 // إضافة عضو جديد (ذكر فقط)
 app.post('/api/families/:id/members', authMiddleware, async (c) => {
   const user = c.get('user')
