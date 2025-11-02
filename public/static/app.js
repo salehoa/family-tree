@@ -130,10 +130,18 @@ function showAdminPanel() {
 }
 
 function showCreateFamilyModal() {
-    const name = prompt('أدخل اسم العائلة:');
-    if (name) {
-        createFamily(name);
+    const familyName = prompt('أدخل اسم العائلة:');
+    if (!familyName || familyName.trim() === '') {
+        return;
     }
+    
+    const ancestorName = prompt('أدخل اسم الجد الأكبر (الاسم الأول):');
+    if (!ancestorName || ancestorName.trim() === '') {
+        alert('يجب إدخال اسم الجد الأكبر');
+        return;
+    }
+    
+    createFamily(familyName.trim(), ancestorName.trim());
 }
 
 // Context menu functions
@@ -486,16 +494,29 @@ async function loadFamilyTree(familyId) {
     }
 }
 
-async function createFamily(name) {
+async function createFamily(familyName, ancestorName) {
     if (!currentUser) {
         alert('يجب تسجيل الدخول أولاً');
         return;
     }
     
     try {
-        await axios.post(`${API_BASE}/families`, {
-            name: name,
-            description: 'شجرة عائلة ' + name
+        // 1. إنشاء العائلة
+        const familyResponse = await axios.post(`${API_BASE}/families`, {
+            name: familyName,
+            description: 'شجرة عائلة ' + familyName
+        }, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        
+        const newFamilyId = familyResponse.data.id;
+        
+        // 2. إضافة الجد الأكبر كأول عضو في العائلة
+        await axios.post(`${API_BASE}/families/${newFamilyId}/members`, {
+            first_name: ancestorName,
+            father_id: null  // الجد الأكبر ليس له أب
         }, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -503,7 +524,7 @@ async function createFamily(name) {
         });
         
         await loadFamilies();
-        alert('تم إنشاء العائلة بنجاح');
+        alert('تم إنشاء العائلة وإضافة الجد الأكبر بنجاح');
     } catch (error) {
         alert('فشل إنشاء العائلة');
         console.error('Error creating family:', error);
