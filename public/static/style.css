@@ -263,6 +263,25 @@ body {
     }
 }
 
+/* Family Modal - Full Screen */
+#familyModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+}
+
+#familyModal > div {
+    width: 100vw;
+    height: 100vh;
+}
+
+#familyModal .flex-shrink-0 {
+    min-height: 60px;
+}
+
 /* Modal for add son */
 .modal-overlay {
     position: fixed;
@@ -612,21 +631,25 @@ body {
         z-index: 100;
     }
     
-    /* Modal adjustments for mobile */
-    #familyModal {
-        padding: 8px;
+    /* Modal header adjustments for mobile */
+    #familyModal .flex-shrink-0 {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
     }
     
-    #familyModal > div {
-        max-w-full;
-        max-h-[98vh];
-        border-radius: 12px;
+    #familyModalTitle {
+        font-size: 18px;
+        width: 100%;
+        margin-bottom: 8px;
     }
     
     /* Zoom controls - make them more accessible */
     #familyModal button {
         padding: 8px 12px;
         font-size: 14px;
+        flex: 1;
+        min-width: auto;
     }
     
     #familyModal button i {
@@ -650,31 +673,23 @@ body {
         font-size: 24px;
     }
     
-    /* Modal full screen on small devices */
-    #familyModal {
-        padding: 0;
-    }
-    
-    #familyModal > div {
-        max-w-full;
-        max-h-full;
-        border-radius: 0;
-        height: 100vh;
-    }
-    
-    /* Compact modal header */
-    #familyModal .p-6 {
-        padding: 12px;
+    /* Modal adjustments for small screens */
+    #familyModal .flex-shrink-0 {
+        padding: 10px 12px;
     }
     
     #familyModalTitle {
-        font-size: 18px;
+        font-size: 16px;
     }
     
     /* Smaller zoom control buttons */
     #familyModal button {
         padding: 6px 10px;
         font-size: 12px;
+    }
+    
+    #familyModal button span {
+        display: none !important;
     }
 }
 

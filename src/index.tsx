@@ -455,31 +455,37 @@ app.get('/', (c) => {
         </div>
 
         <!-- Family Tree Modal -->
-        <div id="familyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-xl shadow-2xl w-full h-full max-w-[95vw] max-h-[95vh] flex flex-col">
-                <div class="flex justify-between items-center p-6 border-b">
-                    <h2 id="familyModalTitle" class="text-2xl font-bold text-gray-800"></h2>
-                    <div class="flex gap-2 items-center">
-                        <button onclick="zoomIn()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition" title="تكبير">
+        <div id="familyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+            <div class="w-full h-full flex flex-col bg-white">
+                <!-- Header with controls -->
+                <div class="flex-shrink-0 flex justify-between items-center px-6 py-4 border-b bg-white shadow-sm">
+                    <h2 id="familyModalTitle" class="text-2xl font-bold text-gray-800 flex-shrink-0"></h2>
+                    <div class="flex gap-2 items-center flex-wrap">
+                        <button onclick="zoomIn()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="تكبير">
                             <i class="fas fa-search-plus"></i>
+                            <span class="hidden sm:inline">تكبير</span>
                         </button>
-                        <button onclick="zoomOut()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition" title="تصغير">
+                        <button onclick="zoomOut()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="تصغير">
                             <i class="fas fa-search-minus"></i>
+                            <span class="hidden sm:inline">تصغير</span>
                         </button>
-                        <button onclick="resetZoom()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition" title="إعادة ضبط">
+                        <button onclick="resetZoom()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="إعادة ضبط">
                             <i class="fas fa-redo"></i>
+                            <span class="hidden sm:inline">إعادة ضبط</span>
                         </button>
-                        <button onclick="showAddMemberModal()" id="addMemberBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
-                            <i class="fas fa-user-plus ml-2"></i>
-                            إضافة فرد
+                        <button onclick="showAddMemberModal()" id="addMemberBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                            <i class="fas fa-user-plus"></i>
+                            <span class="hidden sm:inline">إضافة فرد</span>
                         </button>
-                        <button onclick="hideFamilyModal()" class="text-gray-600 hover:text-gray-800 text-2xl px-2">
+                        <button onclick="hideFamilyModal()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="إغلاق">
                             <i class="fas fa-times"></i>
+                            <span class="hidden sm:inline">إغلاق</span>
                         </button>
                     </div>
                 </div>
 
-                <div id="familyTreeContainer" class="flex-1 overflow-auto p-6 bg-gray-50">
+                <!-- Tree container - takes remaining space -->
+                <div id="familyTreeContainer" class="flex-1 overflow-hidden bg-gray-50">
                     <!-- Family tree will be rendered here -->
                 </div>
             </div>
