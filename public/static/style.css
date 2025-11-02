@@ -44,7 +44,7 @@ body {
     flex-direction: column;
     align-items: center;
     position: relative;
-    margin-bottom: 40px;
+    margin-bottom: 80px; /* زيادة من 40px إلى 80px */
 }
 
 /* Vertical line from parent to children */
@@ -56,9 +56,9 @@ body {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -40px;
+    bottom: -80px; /* زيادة من -40px إلى -80px */
     width: 4px;
-    height: 40px;
+    height: 80px; /* زيادة من 40px إلى 80px */
     background-color: #3b82f6;
     transform: translateX(-50%);
 }
@@ -66,8 +66,8 @@ body {
 .children-container {
     display: flex;
     flex-direction: row;
-    gap: 120px; /* زيادة من 60px إلى 120px */
-    margin-top: 40px;
+    gap: 60px; /* إعادة إلى 60px */
+    margin-top: 80px; /* زيادة من 40px إلى 80px - المسافة العمودية */
     position: relative;
     align-items: flex-start;
 }
@@ -78,7 +78,7 @@ body {
     position: absolute;
     left: 0;
     right: 0;
-    top: -40px;
+    top: -80px; /* زيادة من -40px إلى -80px */
     height: 4px;
     background-color: #3b82f6;
 }
@@ -88,9 +88,9 @@ body {
     content: '';
     position: absolute;
     left: 50%;
-    top: -40px;
+    top: -80px; /* زيادة من -40px إلى -80px */
     width: 4px;
-    height: 40px;
+    height: 80px; /* زيادة من 40px إلى 80px */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
@@ -378,23 +378,27 @@ body {
         padding: 60px 15px 15px 15px; /* زيادة الهامش العلوي */
     }
     
+    .tree-node-wrapper {
+        margin-bottom: 60px; /* زيادة المسافة العمودية */
+    }
+    
     .children-container {
-        gap: 80px; /* زيادة من 40px إلى 80px */
-        margin-top: 30px;
+        gap: 40px; /* إعادة إلى 40px - المسافة الأفقية */
+        margin-top: 60px; /* زيادة من 30px إلى 60px - المسافة العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 30px;
-        bottom: -30px;
+        height: 60px; /* زيادة من 30px إلى 60px */
+        bottom: -60px; /* زيادة من -30px إلى -60px */
     }
     
     .children-container::before {
-        top: -30px;
+        top: -60px; /* زيادة من -30px إلى -60px */
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -30px;
-        height: 30px;
+        top: -60px; /* زيادة من -30px إلى -60px */
+        height: 60px; /* زيادة من 30px إلى 60px */
     }
     
     .member-card {
@@ -431,25 +435,29 @@ body {
         padding: 50px 10px 10px 10px; /* زيادة الهامش العلوي */
     }
     
+    .tree-node-wrapper {
+        margin-bottom: 50px; /* زيادة المسافة العمودية */
+    }
+    
     .children-container {
-        gap: 60px; /* زيادة من 30px إلى 60px */
-        margin-top: 25px;
+        gap: 30px; /* إعادة إلى 30px - المسافة الأفقية */
+        margin-top: 50px; /* زيادة من 25px إلى 50px - المسافة العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 25px;
-        bottom: -25px;
+        height: 50px; /* زيادة من 25px إلى 50px */
+        bottom: -50px; /* زيادة من -25px إلى -50px */
         width: 3px;
     }
     
     .children-container::before {
-        top: -25px;
+        top: -50px; /* زيادة من -25px إلى -50px */
         height: 3px;
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -25px;
-        height: 25px;
+        top: -50px; /* زيادة من -25px إلى -50px */
+        height: 50px; /* زيادة من 25px إلى 50px */
         width: 3px;
     }
     
@@ -500,25 +508,29 @@ body {
         padding: 40px 8px 8px 8px; /* زيادة الهامش العلوي */
     }
     
+    .tree-node-wrapper {
+        margin-bottom: 40px; /* زيادة المسافة العمودية */
+    }
+    
     .children-container {
-        gap: 40px; /* زيادة من 20px إلى 40px */
-        margin-top: 20px;
+        gap: 20px; /* إعادة إلى 20px - المسافة الأفقية */
+        margin-top: 40px; /* زيادة من 20px إلى 40px - المسافة العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 20px;
-        bottom: -20px;
+        height: 40px; /* زيادة من 20px إلى 40px */
+        bottom: -40px; /* زيادة من -20px إلى -40px */
         width: 2px;
     }
     
     .children-container::before {
-        top: -20px;
+        top: -40px; /* زيادة من -20px إلى -40px */
         height: 2px;
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -20px;
-        height: 20px;
+        top: -40px; /* زيادة من -20px إلى -40px */
+        height: 40px; /* زيادة من 20px إلى 40px */
         width: 2px;
     }
     
@@ -573,23 +585,27 @@ body {
         padding: 35px 5px 5px 5px; /* زيادة الهامش العلوي */
     }
     
+    .tree-node-wrapper {
+        margin-bottom: 35px; /* زيادة المسافة العمودية */
+    }
+    
     .children-container {
-        gap: 30px; /* زيادة من 15px إلى 30px */
-        margin-top: 18px;
+        gap: 15px; /* إعادة إلى 15px - المسافة الأفقية */
+        margin-top: 35px; /* زيادة من 18px إلى 35px - المسافة العمودية */
     }
     
     .tree-node-wrapper:has(.children-container) > .member-card::after {
-        height: 18px;
-        bottom: -18px;
+        height: 35px; /* زيادة من 18px إلى 35px */
+        bottom: -35px; /* زيادة من -18px إلى -35px */
     }
     
     .children-container::before {
-        top: -18px;
+        top: -35px; /* زيادة من -18px إلى -35px */
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: -18px;
-        height: 18px;
+        top: -35px; /* زيادة من -18px إلى -35px */
+        height: 35px; /* زيادة من 18px إلى 35px */
     }
     
     .member-card {
