@@ -487,7 +487,7 @@ app.get('/', (c) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>شجرة العائلة - الذكور</title>
+        <title>عوائل القريتين</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         <link href="/static/style.css" rel="stylesheet">
@@ -499,8 +499,7 @@ app.get('/', (c) => {
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <i class="fas fa-sitemap text-3xl text-blue-600 ml-3"></i>
-                        <h1 class="text-2xl font-bold text-gray-800">شجرة العائلة</h1>
-                        <span class="mr-3 text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">الذكور فقط</span>
+                        <h1 class="text-2xl font-bold text-gray-800">عوائل القريتين</h1>
                     </div>
                     <div id="authButtons" class="flex gap-2">
                         <button onclick="showLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
