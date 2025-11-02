@@ -4,6 +4,8 @@ let currentFamilyId = null;
 let families = [];
 let familyTree = null;
 let zoomLevel = 1;
+let contextMenuVisible = false;
+let selectedMemberId = null;
 
 // API Base URL
 const API_BASE = '/api';
@@ -19,6 +21,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Load families
     await loadFamilies();
+    
+    // Close context menu on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.context-menu') && !e.target.closest('.member-card')) {
+            hideContextMenu();
+        }
+    });
 });
 
 // Authentication functions
@@ -95,6 +104,7 @@ function hideFamilyModal() {
     document.getElementById('familyModal').classList.add('hidden');
     currentFamilyId = null;
     familyTree = null;
+    hideContextMenu();
 }
 
 function showAdminPanel() {
@@ -108,42 +118,97 @@ function showCreateFamilyModal() {
     }
 }
 
-function showAddMemberModal() {
-    const firstName = prompt('أدخل الاسم الأول:');
+// Context menu functions
+function showContextMenu(memberId, event) {
+    event.stopPropagation();
+    
+    if (!currentUser) {
+        return;
+    }
+    
+    selectedMemberId = memberId;
+    const menu = document.getElementById('contextMenu');
+    
+    // Position the menu
+    menu.style.left = event.pageX + 'px';
+    menu.style.top = event.pageY + 'px';
+    menu.classList.add('show');
+    
+    contextMenuVisible = true;
+}
+
+function hideContextMenu() {
+    const menu = document.getElementById('contextMenu');
+    menu.classList.remove('show');
+    contextMenuVisible = false;
+    selectedMemberId = null;
+}
+
+function showAddSonModal() {
+    hideContextMenu();
+    
+    const firstName = prompt('أدخل الاسم الأول للابن:');
     if (!firstName) return;
     
-    const lastName = prompt('أدخل اسم العائلة:');
-    const birthDate = prompt('تاريخ الميلاد (YYYY-MM-DD):');
-    
-    // اختيار الأب
-    let fatherId = null;
-    if (familyTree && familyTree.total_members > 0) {
-        const fatherName = prompt('أدخل اسم الأب (اتركه فارغاً إذا كان الجد الأكبر):');
-        if (fatherName) {
-            // البحث عن الأب في الشجرة
-            fatherId = findMemberByName(familyTree.tree, fatherName);
-        }
-    }
+    const lastName = prompt('أدخل اسم العائلة (اختياري):');
+    const birthDate = prompt('تاريخ الميلاد (YYYY-MM-DD) (اختياري):');
     
     addMember(currentFamilyId, {
         first_name: firstName,
         last_name: lastName,
-        father_id: fatherId,
+        father_id: selectedMemberId,
         birth_date: birthDate
     });
 }
 
-function findMemberByName(nodes, name) {
-    for (const node of nodes) {
-        if (node.first_name === name) {
-            return node.id;
+function showUploadPhotoModal() {
+    hideContextMenu();
+    
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            await uploadPhoto(selectedMemberId, file);
         }
-        if (node.children && node.children.length > 0) {
-            const found = findMemberByName(node.children, name);
-            if (found) return found;
-        }
+    };
+    input.click();
+}
+
+async function uploadPhoto(memberId, file) {
+    const formData = new FormData();
+    formData.append('photo', file);
+    
+    try {
+        // Convert file to base64
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result;
+            
+            // Update member with photo URL
+            await axios.put(
+                `${API_BASE}/families/${currentFamilyId}/members/${memberId}`,
+                {
+                    photo_url: base64
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            
+            // Reload tree
+            await loadFamilyTree(currentFamilyId);
+            alert('تم تحميل الصورة بنجاح');
+        };
+        reader.readAsDataURL(file);
+    } catch (error) {
+        alert('فشل تحميل الصورة');
+        console.error('Upload error:', error);
     }
-    return null;
 }
 
 // Zoom functions
@@ -167,7 +232,7 @@ function applyZoom() {
     const tree = container.querySelector('.tree-root');
     if (tree) {
         tree.style.transform = `scale(${zoomLevel})`;
-        tree.style.transformOrigin = 'top center';
+        tree.style.transformOrigin = 'top right';
     }
 }
 
@@ -193,11 +258,6 @@ async function loadFamilyTree(familyId) {
         familyTree = treeRes.data;
         
         document.getElementById('familyModalTitle').textContent = family.name;
-        
-        // Show add member button if user has permission
-        if (currentUser) {
-            document.getElementById('addMemberBtn').classList.remove('hidden');
-        }
         
         renderFamilyTree();
     } catch (error) {
@@ -299,58 +359,55 @@ function renderFamilyTree() {
     }
     
     container.innerHTML = `
-        <div class="tree-root" style="min-width: max-content;">
+        <div class="tree-root">
             ${familyTree.tree.map(root => renderTreeNode(root)).join('')}
+        </div>
+        
+        <!-- Context Menu -->
+        <div id="contextMenu" class="context-menu">
+            <div class="context-menu-item" onclick="showAddSonModal()">
+                <i class="fas fa-plus"></i>
+                <span>إضافة ابن</span>
+            </div>
+            <div class="context-menu-item" onclick="showUploadPhotoModal()">
+                <i class="fas fa-camera"></i>
+                <span>تحميل صورة</span>
+            </div>
         </div>
     `;
     
     applyZoom();
 }
 
-function renderTreeNode(node, level = 0) {
+function renderTreeNode(node) {
     const hasChildren = node.children && node.children.length > 0;
     const age = calculateAge(node.birth_date, node.death_date);
     const isAlive = !node.death_date;
     
     return `
-        <div class="tree-node-wrapper" style="margin-right: ${level * 40}px;">
-            <div class="flex items-start mb-4">
-                ${level > 0 ? '<div class="tree-line"></div>' : ''}
-                <div class="member-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition ${isAlive ? 'border-r-4 border-blue-500' : 'border-r-4 border-gray-400'}">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                            <i class="fas fa-male text-2xl text-blue-600"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800 text-lg">${node.first_name} ${node.last_name || ''}</h4>
-                            ${node.birth_date ? `
-                                <p class="text-sm text-gray-600">
-                                    <i class="fas fa-birthday-cake ml-1"></i>
-                                    ${node.birth_date}
-                                    ${age ? `<span class="mr-2">(${age} ${isAlive ? 'سنة' : 'سنة عند الوفاة'})</span>` : ''}
-                                </p>
-                            ` : ''}
-                            ${node.death_date ? `
-                                <p class="text-sm text-red-600">
-                                    <i class="fas fa-cross ml-1"></i>
-                                    ${node.death_date}
-                                </p>
-                            ` : ''}
-                            ${node.bio ? `<p class="text-sm text-gray-600 mt-1">${node.bio}</p>` : ''}
-                            <p class="text-xs text-gray-500 mt-1">الجيل ${node.generation + 1}</p>
-                        </div>
-                    </div>
-                    ${hasChildren ? `
-                        <div class="mt-2 text-sm text-blue-600">
-                            <i class="fas fa-users ml-1"></i>
-                            ${node.children.length} ${node.children.length === 1 ? 'ابن' : 'أبناء'}
-                        </div>
-                    ` : ''}
+        <div class="tree-node-wrapper">
+            <div class="member-card ${isAlive ? 'alive' : 'deceased'}" 
+                 data-generation="${node.generation}"
+                 onclick="showContextMenu(${node.id}, event)">
+                <div class="member-photo">
+                    ${node.photo_url ? 
+                        `<img src="${node.photo_url}" alt="${node.first_name}">` :
+                        `<i class="fas fa-male"></i>`
+                    }
                 </div>
+                <div class="member-name">${node.first_name}</div>
+                <div class="member-info">
+                    ${node.birth_date ? `${node.birth_date.substring(0, 4)}` : ''}
+                    ${age && isAlive ? ` (${age})` : ''}
+                    ${!isAlive && node.death_date ? `<br>† ${node.death_date.substring(0, 4)}` : ''}
+                </div>
+                <div class="member-generation">الجيل ${node.generation + 1}</div>
+                ${hasChildren ? `<div class="children-count">${node.children.length}</div>` : ''}
             </div>
+            
             ${hasChildren ? `
                 <div class="children-container">
-                    ${node.children.map(child => renderTreeNode(child, level + 1)).join('')}
+                    ${node.children.map(child => renderTreeNode(child)).join('')}
                 </div>
             ` : ''}
         </div>

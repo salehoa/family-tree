@@ -237,7 +237,7 @@ app.put('/api/families/:familyId/members/:memberId', authMiddleware, async (c) =
   const user = c.get('user')
   const familyId = c.req.param('familyId')
   const memberId = c.req.param('memberId')
-  const { first_name, last_name, father_id, birth_date, death_date, bio, photo_url } = await c.req.json()
+  const updates = await c.req.json()
   
   // التحقق من الصلاحيات
   const permission = await c.env.DB.prepare(
@@ -248,9 +248,27 @@ app.put('/api/families/:familyId/members/:memberId', authMiddleware, async (c) =
     return c.json({ error: 'No permission to edit this family' }, 403)
   }
   
+  // Get current member data
+  const currentMember = await c.env.DB.prepare(
+    'SELECT * FROM family_members WHERE id = ? AND family_id = ?'
+  ).bind(memberId, familyId).first()
+  
+  if (!currentMember) {
+    return c.json({ error: 'Member not found' }, 404)
+  }
+  
+  // Merge updates with current data
+  const first_name = updates.first_name !== undefined ? updates.first_name : currentMember.first_name
+  const last_name = updates.last_name !== undefined ? updates.last_name : currentMember.last_name
+  const father_id = updates.father_id !== undefined ? updates.father_id : currentMember.father_id
+  const birth_date = updates.birth_date !== undefined ? updates.birth_date : currentMember.birth_date
+  const death_date = updates.death_date !== undefined ? updates.death_date : currentMember.death_date
+  const bio = updates.bio !== undefined ? updates.bio : currentMember.bio
+  const photo_url = updates.photo_url !== undefined ? updates.photo_url : currentMember.photo_url
+  
   // حساب الجيل إذا تغير الأب
-  let generation = 0
-  if (father_id) {
+  let generation = currentMember.generation
+  if (updates.father_id !== undefined && father_id) {
     const father = await c.env.DB.prepare(
       'SELECT generation FROM family_members WHERE id = ?'
     ).bind(father_id).first()
@@ -258,6 +276,8 @@ app.put('/api/families/:familyId/members/:memberId', authMiddleware, async (c) =
     if (father) {
       generation = (father.generation || 0) + 1
     }
+  } else if (updates.father_id !== undefined && !father_id) {
+    generation = 0
   }
   
   const result = await c.env.DB.prepare(

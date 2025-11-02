@@ -1,4 +1,4 @@
-/* Custom styles for Family Tree App */
+/* Custom styles for Family Tree App - Horizontal Layout */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,61 +13,230 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Tree structure styles */
+/* Horizontal Tree Structure */
 .tree-root {
-    padding: 20px;
+    padding: 40px;
     display: inline-block;
     transition: transform 0.3s ease;
+    min-width: max-content;
 }
 
 .tree-node-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
-.tree-line {
-    position: absolute;
-    right: -20px;
-    top: 30px;
-    width: 20px;
-    height: 2px;
-    background-color: #cbd5e0;
-}
-
-.tree-line::before {
+/* Horizontal connector lines */
+.tree-node-wrapper::before {
     content: '';
     position: absolute;
-    right: 20px;
-    top: -30px;
+    right: 50%;
+    top: -20px;
     width: 2px;
-    height: 32px;
-    background-color: #cbd5e0;
+    height: 20px;
+    background-color: #3b82f6;
+}
+
+.tree-node-wrapper:first-child::before {
+    display: none;
 }
 
 .children-container {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    margin-top: 40px;
+    margin-right: 60px;
     position: relative;
-    margin-right: 40px;
 }
 
+/* Horizontal line from parent to children */
 .children-container::before {
     content: '';
     position: absolute;
-    right: -20px;
-    top: 0;
-    bottom: 20px;
-    width: 2px;
-    background-color: #cbd5e0;
+    right: -30px;
+    top: -20px;
+    width: 30px;
+    height: 2px;
+    background-color: #3b82f6;
 }
 
+/* Vertical line connecting children */
+.children-container::after {
+    content: '';
+    position: absolute;
+    right: 50%;
+    top: -20px;
+    width: 2px;
+    height: calc(100% + 20px);
+    background-color: #3b82f6;
+    transform: translateX(50%);
+}
+
+/* Member card styling */
 .member-card {
-    min-width: 300px;
-    max-width: 400px;
+    min-width: 180px;
+    max-width: 180px;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    border: 2px solid #e5e7eb;
 }
 
 .member-card:hover {
-    transform: translateX(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
+}
+
+.member-card.alive {
+    border-right: 4px solid #10b981;
+}
+
+.member-card.deceased {
+    border-right: 4px solid #6b7280;
+    background: #f9fafb;
+}
+
+/* Photo container */
+.member-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    background: #dbeafe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid #3b82f6;
+}
+
+.member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.member-photo i {
+    font-size: 28px;
+    color: #3b82f6;
+}
+
+.member-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1f2937;
+    text-align: center;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.member-info {
+    font-size: 11px;
+    color: #6b7280;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.member-generation {
+    font-size: 10px;
+    color: #3b82f6;
+    text-align: center;
+    margin-top: 6px;
+    font-weight: 600;
+}
+
+.children-count {
+    position: absolute;
+    bottom: -15px;
+    right: 50%;
+    transform: translateX(50%);
+    background: #3b82f6;
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Context menu */
+.context-menu {
+    position: fixed;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    z-index: 1000;
+    min-width: 180px;
+    display: none;
+}
+
+.context-menu.show {
+    display: block;
+}
+
+.context-menu-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #374151;
+}
+
+.context-menu-item:hover {
+    background: #f3f4f6;
+}
+
+.context-menu-item i {
+    width: 20px;
+    color: #3b82f6;
+}
+
+.context-menu-item.danger {
+    color: #dc2626;
+}
+
+.context-menu-item.danger i {
+    color: #dc2626;
+}
+
+/* Modal for add son */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    display: none;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 /* Animation for modals */
@@ -128,38 +297,58 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .tree-node {
-        margin-bottom: 1rem;
-    }
-    
-    #familyModal > div {
-        max-width: 95%;
-        margin: 1rem;
-    }
-    
-    .member-card {
-        min-width: 250px;
-        max-width: 300px;
-    }
-    
-    .tree-node-wrapper {
-        margin-right: 20px !important;
+    .tree-root {
+        padding: 20px;
     }
     
     .children-container {
-        margin-right: 20px;
+        gap: 40px;
+        margin-right: 40px;
+    }
+    
+    .member-card {
+        min-width: 140px;
+        max-width: 140px;
+        padding: 12px;
+    }
+    
+    .member-photo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .member-name {
+        font-size: 14px;
+    }
+    
+    .member-info {
+        font-size: 10px;
     }
 }
 
 @media (max-width: 480px) {
     .member-card {
-        min-width: 200px;
-        max-width: 250px;
-        font-size: 0.875rem;
+        min-width: 120px;
+        max-width: 120px;
+        padding: 10px;
     }
     
-    .tree-root {
-        padding: 10px;
+    .member-photo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .member-photo i {
+        font-size: 20px;
+    }
+    
+    .member-name {
+        font-size: 13px;
+    }
+    
+    .children-container {
+        gap: 30px;
+        margin-right: 30px;
     }
 }
 
@@ -168,12 +357,9 @@ body {
     header,
     #authButtons,
     #userMenu,
-    button {
+    button,
+    .context-menu {
         display: none;
-    }
-    
-    .tree-node {
-        break-inside: avoid;
     }
     
     .member-card {
@@ -187,19 +373,39 @@ body {
     will-change: transform;
 }
 
-/* Generation indicators */
-.generation-0 .member-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+/* Generation colors */
+.member-card[data-generation="0"] .member-photo {
+    border-color: #7c3aed;
+    background: #ede9fe;
 }
 
-.generation-0 .member-card h4,
-.generation-0 .member-card p {
-    color: white;
+.member-card[data-generation="0"] .member-photo i {
+    color: #7c3aed;
 }
 
-/* Better spacing for deeply nested trees */
-.tree-node-wrapper[style*="margin-right: 160px"] .member-card,
-.tree-node-wrapper[style*="margin-right: 200px"] .member-card {
-    background-color: #f7fafc;
+.member-card[data-generation="1"] .member-photo {
+    border-color: #2563eb;
+    background: #dbeafe;
+}
+
+.member-card[data-generation="1"] .member-photo i {
+    color: #2563eb;
+}
+
+.member-card[data-generation="2"] .member-photo {
+    border-color: #059669;
+    background: #d1fae5;
+}
+
+.member-card[data-generation="2"] .member-photo i {
+    color: #059669;
+}
+
+.member-card[data-generation="3"] .member-photo {
+    border-color: #d97706;
+    background: #fef3c7;
+}
+
+.member-card[data-generation="3"] .member-photo i {
+    color: #d97706;
 }
