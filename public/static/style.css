@@ -73,15 +73,21 @@ body {
     align-items: flex-start;
 }
 
-/* Horizontal line connecting siblings - at bottom of parent's vertical line */
+/* Horizontal line connecting siblings - from first to last child center */
 .children-container::before {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
+    /* Calculate positions based on first and last child centers */
+    left: 90px; /* نصف عرض البطاقة (180px / 2) */
+    right: 90px; /* نصف عرض البطاقة */
     top: 0; /* في نهاية الخط النازل من الأب */
     height: 4px;
     background-color: #3b82f6;
+}
+
+/* For single child, hide the horizontal line */
+.children-container:has(.tree-node-wrapper:only-child)::before {
+    display: none;
 }
 
 /* Vertical lines dropping to each sibling - from horizontal line to cards */
@@ -396,6 +402,8 @@ body {
     
     .children-container::before {
         top: 0; /* في نهاية الخط النازل */
+        left: 75px; /* نصف عرض البطاقة (150px / 2) */
+        right: 75px;
     }
     
     .children-container > .tree-node-wrapper::before {
@@ -456,6 +464,8 @@ body {
     .children-container::before {
         top: 0; /* في نهاية الخط النازل */
         height: 3px;
+        left: 60px; /* نصف عرض البطاقة (120px / 2) */
+        right: 60px;
     }
     
     .children-container > .tree-node-wrapper::before {
@@ -530,6 +540,8 @@ body {
     .children-container::before {
         top: 0; /* في نهاية الخط النازل */
         height: 2px;
+        left: 50px; /* نصف عرض البطاقة (100px / 2) */
+        right: 50px;
     }
     
     .children-container > .tree-node-wrapper::before {
@@ -606,6 +618,8 @@ body {
     
     .children-container::before {
         top: 0; /* في نهاية الخط النازل */
+        left: 42.5px; /* نصف عرض البطاقة (85px / 2) */
+        right: 42.5px;
     }
     
     .children-container > .tree-node-wrapper::before {
