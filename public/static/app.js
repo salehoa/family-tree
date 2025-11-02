@@ -262,7 +262,7 @@ function applyZoom() {
     const tree = container.querySelector('.tree-root');
     if (tree) {
         tree.style.transform = `scale(${zoomLevel})`;
-        tree.style.transformOrigin = 'top center';
+        tree.style.transformOrigin = 'center center';
     }
 }
 
@@ -274,7 +274,7 @@ function autoScaleTree() {
     
     // Reset any existing transformations to measure actual size
     tree.style.transform = 'scale(1)';
-    tree.style.transformOrigin = 'top center';
+    tree.style.transformOrigin = 'center center';
     
     // Force reflow to get accurate measurements
     container.offsetHeight;
@@ -330,7 +330,7 @@ function autoScaleTree() {
         // Apply the scale
         zoomLevel = scale;
         tree.style.transform = `scale(${scale})`;
-        tree.style.transformOrigin = 'top center';
+        tree.style.transformOrigin = 'center center';
     }, 50);
 }
 
