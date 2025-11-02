@@ -363,15 +363,48 @@ app.post('/api/admin/users', authMiddleware, adminMiddleware, async (c) => {
   return c.json(result)
 })
 
+// تحديث مستخدم (كلمة المرور)
+app.put('/api/admin/users/:id', authMiddleware, adminMiddleware, async (c) => {
+  const userId = c.req.param('id')
+  const { password } = await c.req.json()
+  
+  await c.env.DB.prepare(
+    'UPDATE users SET password = ? WHERE id = ?'
+  ).bind(password, userId).run()
+  
+  return c.json({ success: true })
+})
+
 // حذف مستخدم
 app.delete('/api/admin/users/:id', authMiddleware, adminMiddleware, async (c) => {
   const userId = c.req.param('id')
   
+  // حذف صلاحيات المستخدم أولاً
+  await c.env.DB.prepare(
+    'DELETE FROM family_permissions WHERE user_id = ?'
+  ).bind(userId).run()
+  
+  // ثم حذف المستخدم
   await c.env.DB.prepare(
     'DELETE FROM users WHERE id = ?'
   ).bind(userId).run()
   
   return c.json({ success: true })
+})
+
+// جلب صلاحيات مستخدم معين
+app.get('/api/admin/users/:id/permissions', authMiddleware, adminMiddleware, async (c) => {
+  const userId = c.req.param('id')
+  
+  const permissions = await c.env.DB.prepare(`
+    SELECT fp.*, f.name as family_name
+    FROM family_permissions fp
+    JOIN families f ON fp.family_id = f.id
+    WHERE fp.user_id = ?
+    ORDER BY f.name
+  `).bind(userId).all()
+  
+  return c.json(permissions.results)
 })
 
 // منح صلاحيات
@@ -483,6 +516,29 @@ app.get('/', (c) => {
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Admin Panel Modal -->
+        <div id="adminModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+            <div class="w-full h-full flex items-center justify-center p-4">
+                <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center px-6 py-4 border-b bg-gradient-to-r from-blue-600 to-indigo-600">
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                            <i class="fas fa-user-shield"></i>
+                            لوحة الإدارة
+                        </h2>
+                        <button onclick="hideAdminPanel()" class="text-white hover:text-gray-200 text-2xl px-2">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div id="adminContent" class="flex-1 overflow-y-auto p-6">
+                        <!-- Admin content will be rendered here -->
+                    </div>
+                </div>
             </div>
         </div>
 

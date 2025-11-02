@@ -125,8 +125,13 @@ function hideFamilyModal() {
     hideContextMenu();
 }
 
-function showAdminPanel() {
-    alert('لوحة الإدارة قيد التطوير');
+async function showAdminPanel() {
+    document.getElementById('adminModal').classList.remove('hidden');
+    await loadAdminData();
+}
+
+function hideAdminPanel() {
+    document.getElementById('adminModal').classList.add('hidden');
 }
 
 function showCreateFamilyModal() {
@@ -766,4 +771,284 @@ function calculateAge(birthDate, deathDate) {
     }
     
     return age;
+}
+
+// ==================== Admin Panel Functions ====================
+
+let allUsers = [];
+let allFamiliesForAdmin = [];
+let userPermissions = {};
+
+async function loadAdminData() {
+    try {
+        // Load all users
+        const usersResponse = await axios.get(`${API_BASE}/admin/users`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        allUsers = usersResponse.data;
+        
+        // Load all families
+        const familiesResponse = await axios.get(`${API_BASE}/families`);
+        allFamiliesForAdmin = familiesResponse.data;
+        
+        // Load permissions for all users
+        for (const user of allUsers) {
+            const permsResponse = await axios.get(`${API_BASE}/admin/users/${user.id}/permissions`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+            });
+            userPermissions[user.id] = permsResponse.data;
+        }
+        
+        renderAdminPanel();
+    } catch (error) {
+        console.error('Error loading admin data:', error);
+        alert('فشل تحميل بيانات الإدارة');
+    }
+}
+
+function renderAdminPanel() {
+    const container = document.getElementById('adminContent');
+    
+    container.innerHTML = `
+        <div class="mb-6">
+            <button onclick="showAddUserForm()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                <i class="fas fa-user-plus mr-2"></i>
+                إضافة مستخدم جديد
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            ${allUsers.map(user => renderUserCard(user)).join('')}
+        </div>
+    `;
+}
+
+function renderUserCard(user) {
+    const permissions = userPermissions[user.id] || [];
+    const isAdmin = user.role === 'admin';
+    
+    return `
+        <div class="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <div class="flex justify-between items-start mb-3">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-lg font-bold text-gray-800">
+                            <i class="fas fa-user text-blue-600 mr-2"></i>
+                            ${user.username}
+                        </h3>
+                        ${isAdmin ? '<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">مدير</span>' : '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">مستخدم</span>'}
+                    </div>
+                    <p class="text-sm text-gray-600">معرّف: ${user.id}</p>
+                </div>
+                
+                ${!isAdmin ? `
+                    <div class="flex gap-2">
+                        <button onclick="showEditUserForm(${user.id})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded hover:bg-blue-50" title="تعديل">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="deleteUser(${user.id}, '${user.username}')" class="text-red-600 hover:text-red-800 px-3 py-1 rounded hover:bg-red-50" title="حذف">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                ` : ''}
+            </div>
+            
+            ${!isAdmin ? `
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-sm font-semibold text-gray-700">
+                            <i class="fas fa-sitemap text-green-600 mr-1"></i>
+                            العوائل المسموح بتعديلها (${permissions.length})
+                        </h4>
+                        <button onclick="showManagePermissions(${user.id}, '${user.username}')" class="text-green-600 hover:text-green-800 text-sm px-3 py-1 rounded hover:bg-green-50">
+                            <i class="fas fa-cog mr-1"></i>
+                            إدارة الصلاحيات
+                        </button>
+                    </div>
+                    
+                    ${permissions.length > 0 ? `
+                        <div class="flex flex-wrap gap-2">
+                            ${permissions.map(perm => `
+                                <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+                                    ${perm.family_name}
+                                </span>
+                            `).join('')}
+                        </div>
+                    ` : '<p class="text-sm text-gray-500 italic">لا توجد صلاحيات حالياً</p>'}
+                </div>
+            ` : '<p class="text-sm text-gray-500 italic mt-3">المدير لديه صلاحيات كاملة على جميع العوائل</p>'}
+        </div>
+    `;
+}
+
+function showAddUserForm() {
+    const username = prompt('أدخل اسم المستخدم:');
+    if (!username || username.trim() === '') return;
+    
+    const password = prompt('أدخل كلمة المرور:');
+    if (!password || password.trim() === '') return;
+    
+    const isAdmin = confirm('هل تريد جعل هذا المستخدم مديراً؟\n(اضغط OK للمدير، أو Cancel للمستخدم العادي)');
+    
+    createUser(username.trim(), password.trim(), isAdmin ? 'admin' : 'user');
+}
+
+async function createUser(username, password, role) {
+    try {
+        await axios.post(`${API_BASE}/admin/users`, {
+            username,
+            password,
+            role
+        }, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        
+        alert('تم إنشاء المستخدم بنجاح');
+        await loadAdminData();
+    } catch (error) {
+        console.error('Error creating user:', error);
+        alert('فشل إنشاء المستخدم. ربما اسم المستخدم مستخدم بالفعل.');
+    }
+}
+
+function showEditUserForm(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const newPassword = prompt(`تعديل كلمة مرور المستخدم: ${user.username}\n\nأدخل كلمة المرور الجديدة:`);
+    if (!newPassword || newPassword.trim() === '') return;
+    
+    updateUserPassword(userId, newPassword.trim());
+}
+
+async function updateUserPassword(userId, newPassword) {
+    try {
+        await axios.put(`${API_BASE}/admin/users/${userId}`, {
+            password: newPassword
+        }, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        
+        alert('تم تحديث كلمة المرور بنجاح');
+        await loadAdminData();
+    } catch (error) {
+        console.error('Error updating user:', error);
+        alert('فشل تحديث كلمة المرور');
+    }
+}
+
+async function deleteUser(userId, username) {
+    const confirmed = confirm(`هل أنت متأكد من حذف المستخدم "${username}"؟\n\nسيتم حذف جميع صلاحياته أيضاً.`);
+    if (!confirmed) return;
+    
+    try {
+        await axios.delete(`${API_BASE}/admin/users/${userId}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        
+        alert('تم حذف المستخدم بنجاح');
+        await loadAdminData();
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('فشل حذف المستخدم');
+    }
+}
+
+function showManagePermissions(userId, username) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const permissions = userPermissions[userId] || [];
+    const permissionFamilyIds = permissions.map(p => p.family_id);
+    
+    const container = document.getElementById('adminContent');
+    
+    container.innerHTML = `
+        <div class="mb-6">
+            <button onclick="renderAdminPanel()" class="text-blue-600 hover:text-blue-800 mb-4">
+                <i class="fas fa-arrow-right mr-2"></i>
+                رجوع إلى قائمة المستخدمين
+            </button>
+            
+            <h3 class="text-xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-cog text-green-600 mr-2"></i>
+                إدارة صلاحيات: ${username}
+            </h3>
+            <p class="text-sm text-gray-600 mb-4">
+                اختر العوائل التي يمكن لهذا المستخدم تعديلها
+            </p>
+        </div>
+        
+        <div class="space-y-3">
+            ${allFamiliesForAdmin.map(family => {
+                const hasPermission = permissionFamilyIds.includes(family.id);
+                return `
+                    <div class="bg-white rounded-lg shadow-sm p-4 border ${hasPermission ? 'border-green-500 bg-green-50' : 'border-gray-200'} flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-sitemap ${hasPermission ? 'text-green-600' : 'text-gray-400'}"></i>
+                            <span class="font-medium ${hasPermission ? 'text-green-800' : 'text-gray-800'}">${family.name}</span>
+                        </div>
+                        
+                        ${hasPermission ? `
+                            <button onclick="removePermission(${userId}, ${family.id}, '${username}')" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">
+                                <i class="fas fa-times mr-1"></i>
+                                إزالة الصلاحية
+                            </button>
+                        ` : `
+                            <button onclick="addPermission(${userId}, ${family.id}, '${username}')" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-sm">
+                                <i class="fas fa-plus mr-1"></i>
+                                منح الصلاحية
+                            </button>
+                        `}
+                    </div>
+                `;
+            }).join('')}
+        </div>
+        
+        ${allFamiliesForAdmin.length === 0 ? '<p class="text-center text-gray-500 mt-8">لا توجد عوائل متاحة</p>' : ''}
+    `;
+}
+
+async function addPermission(userId, familyId, username) {
+    try {
+        await axios.post(`${API_BASE}/admin/permissions`, {
+            user_id: userId,
+            family_id: familyId,
+            can_edit: true
+        }, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        
+        // Reload permissions for this user
+        const permsResponse = await axios.get(`${API_BASE}/admin/users/${userId}/permissions`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        userPermissions[userId] = permsResponse.data;
+        
+        // Re-render the permissions page
+        showManagePermissions(userId, username);
+    } catch (error) {
+        console.error('Error adding permission:', error);
+        alert('فشل منح الصلاحية');
+    }
+}
+
+async function removePermission(userId, familyId, username) {
+    try {
+        await axios.delete(`${API_BASE}/admin/permissions/${userId}/${familyId}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        
+        // Reload permissions for this user
+        const permsResponse = await axios.get(`${API_BASE}/admin/users/${userId}/permissions`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        userPermissions[userId] = permsResponse.data;
+        
+        // Re-render the permissions page
+        showManagePermissions(userId, username);
+    } catch (error) {
+        console.error('Error removing permission:', error);
+        alert('فشل إزالة الصلاحية');
+    }
 }
