@@ -13,6 +13,63 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Tree structure styles */
+.tree-root {
+    padding: 20px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.tree-node-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.tree-line {
+    position: absolute;
+    right: -20px;
+    top: 30px;
+    width: 20px;
+    height: 2px;
+    background-color: #cbd5e0;
+}
+
+.tree-line::before {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: -30px;
+    width: 2px;
+    height: 32px;
+    background-color: #cbd5e0;
+}
+
+.children-container {
+    position: relative;
+    margin-right: 40px;
+}
+
+.children-container::before {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: 0;
+    bottom: 20px;
+    width: 2px;
+    background-color: #cbd5e0;
+}
+
+.member-card {
+    min-width: 300px;
+    max-width: 400px;
+    transition: all 0.3s ease;
+}
+
+.member-card:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
 /* Animation for modals */
 @keyframes fadeIn {
     from {
@@ -38,6 +95,7 @@ body {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -51,15 +109,6 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
-
-/* Gender colors */
-.male-color {
-    color: #3b82f6;
-}
-
-.female-color {
-    color: #ec4899;
 }
 
 /* Loading animation */
@@ -87,6 +136,31 @@ body {
         max-width: 95%;
         margin: 1rem;
     }
+    
+    .member-card {
+        min-width: 250px;
+        max-width: 300px;
+    }
+    
+    .tree-node-wrapper {
+        margin-right: 20px !important;
+    }
+    
+    .children-container {
+        margin-right: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .member-card {
+        min-width: 200px;
+        max-width: 250px;
+        font-size: 0.875rem;
+    }
+    
+    .tree-root {
+        padding: 10px;
+    }
 }
 
 /* Print styles */
@@ -101,4 +175,31 @@ body {
     .tree-node {
         break-inside: avoid;
     }
+    
+    .member-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
+
+/* Smooth zoom transition */
+.tree-root {
+    will-change: transform;
+}
+
+/* Generation indicators */
+.generation-0 .member-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.generation-0 .member-card h4,
+.generation-0 .member-card p {
+    color: white;
+}
+
+/* Better spacing for deeply nested trees */
+.tree-node-wrapper[style*="margin-right: 160px"] .member-card,
+.tree-node-wrapper[style*="margin-right: 200px"] .member-card {
+    background-color: #f7fafc;
 }

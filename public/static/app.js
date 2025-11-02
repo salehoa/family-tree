@@ -2,8 +2,8 @@
 let currentUser = null;
 let currentFamilyId = null;
 let families = [];
-let members = [];
-let relationships = [];
+let familyTree = null;
+let zoomLevel = 1;
 
 // API Base URL
 const API_BASE = '/api';
@@ -87,12 +87,14 @@ function hideLoginModal() {
 function showFamilyModal(familyId) {
     currentFamilyId = familyId;
     document.getElementById('familyModal').classList.remove('hidden');
-    loadFamilyDetails(familyId);
+    resetZoom();
+    loadFamilyTree(familyId);
 }
 
 function hideFamilyModal() {
     document.getElementById('familyModal').classList.add('hidden');
     currentFamilyId = null;
+    familyTree = null;
 }
 
 function showAdminPanel() {
@@ -111,15 +113,62 @@ function showAddMemberModal() {
     if (!firstName) return;
     
     const lastName = prompt('أدخل اسم العائلة:');
-    const gender = prompt('الجنس (male/female):');
     const birthDate = prompt('تاريخ الميلاد (YYYY-MM-DD):');
+    
+    // اختيار الأب
+    let fatherId = null;
+    if (familyTree && familyTree.total_members > 0) {
+        const fatherName = prompt('أدخل اسم الأب (اتركه فارغاً إذا كان الجد الأكبر):');
+        if (fatherName) {
+            // البحث عن الأب في الشجرة
+            fatherId = findMemberByName(familyTree.tree, fatherName);
+        }
+    }
     
     addMember(currentFamilyId, {
         first_name: firstName,
         last_name: lastName,
-        gender: gender,
+        father_id: fatherId,
         birth_date: birthDate
     });
+}
+
+function findMemberByName(nodes, name) {
+    for (const node of nodes) {
+        if (node.first_name === name) {
+            return node.id;
+        }
+        if (node.children && node.children.length > 0) {
+            const found = findMemberByName(node.children, name);
+            if (found) return found;
+        }
+    }
+    return null;
+}
+
+// Zoom functions
+function zoomIn() {
+    zoomLevel = Math.min(zoomLevel + 0.1, 3);
+    applyZoom();
+}
+
+function zoomOut() {
+    zoomLevel = Math.max(zoomLevel - 0.1, 0.3);
+    applyZoom();
+}
+
+function resetZoom() {
+    zoomLevel = 1;
+    applyZoom();
+}
+
+function applyZoom() {
+    const container = document.getElementById('familyTreeContainer');
+    const tree = container.querySelector('.tree-root');
+    if (tree) {
+        tree.style.transform = `scale(${zoomLevel})`;
+        tree.style.transformOrigin = 'top center';
+    }
 }
 
 // API functions
@@ -128,32 +177,20 @@ async function loadFamilies() {
         const response = await axios.get(`${API_BASE}/families`);
         families = response.data;
         renderFamilies();
-        
-        // Load families for search dropdown
-        const familySelect = document.getElementById('familySelect');
-        familySelect.innerHTML = '<option value="">اختر العائلة</option>';
-        families.forEach(family => {
-            const option = document.createElement('option');
-            option.value = family.id;
-            option.textContent = family.name;
-            familySelect.appendChild(option);
-        });
     } catch (error) {
         console.error('Error loading families:', error);
     }
 }
 
-async function loadFamilyDetails(familyId) {
+async function loadFamilyTree(familyId) {
     try {
-        const [familyRes, membersRes, relationsRes] = await Promise.all([
+        const [familyRes, treeRes] = await Promise.all([
             axios.get(`${API_BASE}/families/${familyId}`),
-            axios.get(`${API_BASE}/families/${familyId}/members`),
-            axios.get(`${API_BASE}/families/${familyId}/relationships`)
+            axios.get(`${API_BASE}/families/${familyId}/tree`)
         ]);
         
         const family = familyRes.data;
-        members = membersRes.data;
-        relationships = relationsRes.data;
+        familyTree = treeRes.data;
         
         document.getElementById('familyModalTitle').textContent = family.name;
         
@@ -164,7 +201,7 @@ async function loadFamilyDetails(familyId) {
         
         renderFamilyTree();
     } catch (error) {
-        console.error('Error loading family details:', error);
+        console.error('Error loading family tree:', error);
     }
 }
 
@@ -177,7 +214,7 @@ async function createFamily(name) {
     try {
         await axios.post(`${API_BASE}/families`, {
             name: name,
-            description: ''
+            description: 'شجرة عائلة ' + name
         }, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -205,82 +242,11 @@ async function addMember(familyId, memberData) {
             }
         });
         
-        await loadFamilyDetails(familyId);
+        await loadFamilyTree(familyId);
         alert('تم إضافة الفرد بنجاح');
     } catch (error) {
         alert('فشل إضافة الفرد');
         console.error('Error adding member:', error);
-    }
-}
-
-async function loadFamilyForSearch() {
-    const familyId = document.getElementById('familySelect').value;
-    if (!familyId) return;
-    
-    try {
-        const response = await axios.get(`${API_BASE}/families/${familyId}/members`);
-        const members = response.data;
-        
-        const member1Select = document.getElementById('member1Select');
-        const member2Select = document.getElementById('member2Select');
-        
-        member1Select.innerHTML = '<option value="">الشخص الأول</option>';
-        member2Select.innerHTML = '<option value="">الشخص الثاني</option>';
-        
-        members.forEach(member => {
-            const option1 = document.createElement('option');
-            option1.value = member.id;
-            option1.textContent = `${member.first_name} ${member.last_name || ''}`;
-            member1Select.appendChild(option1);
-            
-            const option2 = document.createElement('option');
-            option2.value = member.id;
-            option2.textContent = `${member.first_name} ${member.last_name || ''}`;
-            member2Select.appendChild(option2);
-        });
-    } catch (error) {
-        console.error('Error loading family members:', error);
-    }
-}
-
-async function findRelationship() {
-    const familyId = document.getElementById('familySelect').value;
-    const member1Id = document.getElementById('member1Select').value;
-    const member2Id = document.getElementById('member2Select').value;
-    
-    if (!familyId || !member1Id || !member2Id) {
-        alert('يرجى اختيار العائلة والشخصين');
-        return;
-    }
-    
-    if (member1Id === member2Id) {
-        alert('يرجى اختيار شخصين مختلفين');
-        return;
-    }
-    
-    try {
-        const response = await axios.get(`${API_BASE}/families/${familyId}/find-relationship?member1=${member1Id}&member2=${member2Id}`);
-        
-        const result = document.getElementById('relationshipResult');
-        const text = document.getElementById('relationshipText');
-        
-        const relationshipNames = {
-            'parent': 'والد/والدة',
-            'child': 'ابن/ابنة',
-            'spouse': 'زوج/زوجة',
-            'sibling': 'أخ/أخت'
-        };
-        
-        if (response.data.type === 'direct') {
-            text.textContent = `العلاقة: ${relationshipNames[response.data.relationship] || response.data.relationship}`;
-        } else {
-            text.textContent = 'لم يتم العثور على علاقة مباشرة';
-        }
-        
-        result.classList.remove('hidden');
-    } catch (error) {
-        alert('فشل البحث عن العلاقة');
-        console.error('Error finding relationship:', error);
     }
 }
 
@@ -291,7 +257,7 @@ function renderFamilies() {
     if (families.length === 0) {
         grid.innerHTML = `
             <div class="col-span-full text-center py-12">
-                <i class="fas fa-tree text-6xl text-gray-300 mb-4"></i>
+                <i class="fas fa-sitemap text-6xl text-gray-300 mb-4"></i>
                 <p class="text-gray-500 text-lg">لا توجد عائلات بعد</p>
             </div>
         `;
@@ -322,7 +288,7 @@ function renderFamilies() {
 function renderFamilyTree() {
     const container = document.getElementById('familyTreeContainer');
     
-    if (members.length === 0) {
+    if (!familyTree || familyTree.tree.length === 0) {
         container.innerHTML = `
             <div class="text-center py-12">
                 <i class="fas fa-users text-6xl text-gray-300 mb-4"></i>
@@ -332,53 +298,77 @@ function renderFamilyTree() {
         return;
     }
     
-    // Simple list view for now
     container.innerHTML = `
-        <div class="space-y-4">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">أفراد العائلة</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                ${members.map(member => `
-                    <div class="bg-white rounded-lg shadow p-4 border-r-4 ${member.gender === 'male' ? 'border-blue-500' : 'border-pink-500'}">
-                        <div class="flex items-start">
-                            <i class="fas ${member.gender === 'male' ? 'fa-male' : 'fa-female'} text-2xl ${member.gender === 'male' ? 'text-blue-500' : 'text-pink-500'} ml-3"></i>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-gray-800">${member.first_name} ${member.last_name || ''}</h4>
-                                ${member.birth_date ? `
-                                    <p class="text-sm text-gray-600">
-                                        <i class="fas fa-birthday-cake ml-1"></i>
-                                        ${member.birth_date}
-                                    </p>
-                                ` : ''}
-                                ${member.bio ? `<p class="text-sm text-gray-600 mt-2">${member.bio}</p>` : ''}
-                            </div>
+        <div class="tree-root" style="min-width: max-content;">
+            ${familyTree.tree.map(root => renderTreeNode(root)).join('')}
+        </div>
+    `;
+    
+    applyZoom();
+}
+
+function renderTreeNode(node, level = 0) {
+    const hasChildren = node.children && node.children.length > 0;
+    const age = calculateAge(node.birth_date, node.death_date);
+    const isAlive = !node.death_date;
+    
+    return `
+        <div class="tree-node-wrapper" style="margin-right: ${level * 40}px;">
+            <div class="flex items-start mb-4">
+                ${level > 0 ? '<div class="tree-line"></div>' : ''}
+                <div class="member-card bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition ${isAlive ? 'border-r-4 border-blue-500' : 'border-r-4 border-gray-400'}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-male text-2xl text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg">${node.first_name} ${node.last_name || ''}</h4>
+                            ${node.birth_date ? `
+                                <p class="text-sm text-gray-600">
+                                    <i class="fas fa-birthday-cake ml-1"></i>
+                                    ${node.birth_date}
+                                    ${age ? `<span class="mr-2">(${age} ${isAlive ? 'سنة' : 'سنة عند الوفاة'})</span>` : ''}
+                                </p>
+                            ` : ''}
+                            ${node.death_date ? `
+                                <p class="text-sm text-red-600">
+                                    <i class="fas fa-cross ml-1"></i>
+                                    ${node.death_date}
+                                </p>
+                            ` : ''}
+                            ${node.bio ? `<p class="text-sm text-gray-600 mt-1">${node.bio}</p>` : ''}
+                            <p class="text-xs text-gray-500 mt-1">الجيل ${node.generation + 1}</p>
                         </div>
                     </div>
-                `).join('')}
+                    ${hasChildren ? `
+                        <div class="mt-2 text-sm text-blue-600">
+                            <i class="fas fa-users ml-1"></i>
+                            ${node.children.length} ${node.children.length === 1 ? 'ابن' : 'أبناء'}
+                        </div>
+                    ` : ''}
+                </div>
             </div>
-            
-            ${relationships.length > 0 ? `
-                <h3 class="text-xl font-bold text-gray-800 mt-8 mb-4">العلاقات</h3>
-                <div class="space-y-2">
-                    ${relationships.map(rel => {
-                        const relNames = {
-                            'parent': 'والد/والدة',
-                            'child': 'ابن/ابنة',
-                            'spouse': 'زوج/زوجة',
-                            'sibling': 'أخ/أخت'
-                        };
-                        return `
-                            <div class="bg-blue-50 rounded-lg p-3 flex items-center">
-                                <i class="fas fa-link text-blue-600 ml-2"></i>
-                                <span class="text-gray-700">
-                                    <strong>${rel.member_name}</strong>
-                                    <span class="text-blue-600 mx-2">${relNames[rel.relationship_type]}</span>
-                                    <strong>${rel.related_name}</strong>
-                                </span>
-                            </div>
-                        `;
-                    }).join('')}
+            ${hasChildren ? `
+                <div class="children-container">
+                    ${node.children.map(child => renderTreeNode(child, level + 1)).join('')}
                 </div>
             ` : ''}
         </div>
     `;
+}
+
+function calculateAge(birthDate, deathDate) {
+    if (!birthDate) return null;
+    
+    const birth = new Date(birthDate);
+    const end = deathDate ? new Date(deathDate) : new Date();
+    
+    let age = end.getFullYear() - birth.getFullYear();
+    const monthDiff = end.getMonth() - birth.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && end.getDate() < birth.getDate())) {
+        age--;
+    }
+    
+    return age;
 }
