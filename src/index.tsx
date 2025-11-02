@@ -97,6 +97,30 @@ app.get('/api/families', async (c) => {
   return c.json(families.results)
 })
 
+// الحصول على العائلات المسموح بها للمستخدم الحالي
+app.get('/api/families/my', authMiddleware, async (c) => {
+  const user = c.get('user')
+  
+  // المديرون يرون جميع العائلات
+  if (user.role === 'admin') {
+    const families = await c.env.DB.prepare(
+      'SELECT * FROM families ORDER BY created_at DESC'
+    ).all()
+    
+    return c.json(families.results)
+  }
+  
+  // المستخدمون العاديون يرون فقط العائلات المسموح لهم بها
+  const families = await c.env.DB.prepare(`
+    SELECT f.* FROM families f
+    INNER JOIN family_permissions fp ON f.id = fp.family_id
+    WHERE fp.user_id = ? AND fp.can_edit = 1
+    ORDER BY f.created_at DESC
+  `).bind(user.id).all()
+  
+  return c.json(families.results)
+})
+
 // الحصول على تفاصيل عائلة محددة
 app.get('/api/families/:id', async (c) => {
   const familyId = c.req.param('id')

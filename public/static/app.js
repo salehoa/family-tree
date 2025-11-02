@@ -520,7 +520,26 @@ function autoScaleTree() {
 // API functions
 async function loadFamilies() {
     try {
-        const response = await axios.get(`${API_BASE}/families`);
+        let response;
+        
+        // إذا كان المستخدم مسجل دخول
+        if (currentUser) {
+            // المديرون يرون جميع العائلات
+            if (currentUser.role === 'admin') {
+                response = await axios.get(`${API_BASE}/families`);
+            } else {
+                // المستخدمون العاديون يرون فقط العائلات المسموح لهم بها
+                response = await axios.get(`${API_BASE}/families/my`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+            }
+        } else {
+            // الزوار يرون جميع العائلات (قراءة فقط)
+            response = await axios.get(`${API_BASE}/families`);
+        }
+        
         families = response.data;
         renderFamilies();
     } catch (error) {
