@@ -552,6 +552,33 @@ async function addMember(familyId, memberData) {
     }
 }
 
+async function deleteFamily(familyId, familyName) {
+    if (!currentUser) {
+        alert('يجب تسجيل الدخول أولاً');
+        return;
+    }
+    
+    // تأكيد الحذف
+    const confirmed = confirm(`هل أنت متأكد من حذف عائلة "${familyName}"؟\n\nتحذير: سيتم حذف جميع أفراد العائلة والبيانات المرتبطة بها بشكل نهائي!`);
+    if (!confirmed) {
+        return;
+    }
+    
+    try {
+        await axios.delete(`${API_BASE}/families/${familyId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        
+        await loadFamilies();
+        alert('تم حذف العائلة بنجاح');
+    } catch (error) {
+        alert('فشل حذف العائلة. تحقق من الصلاحيات.');
+        console.error('Error deleting family:', error);
+    }
+}
+
 // Render functions
 function renderFamilies() {
     const grid = document.getElementById('familiesGrid');
@@ -567,22 +594,32 @@ function renderFamilies() {
     }
     
     grid.innerHTML = families.map(family => `
-        <div class="tree-node bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl" onclick="showFamilyModal(${family.id})">
-            <div class="flex items-center mb-4">
-                <i class="fas fa-sitemap text-3xl text-blue-600 ml-3"></i>
-                <h3 class="text-xl font-bold text-gray-800">${family.name}</h3>
+        <div class="tree-node bg-white rounded-xl shadow-lg p-6 hover:shadow-xl relative">
+            <div class="cursor-pointer" onclick="showFamilyModal(${family.id})">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-sitemap text-3xl text-blue-600 ml-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">${family.name}</h3>
+                </div>
+                ${family.description ? `<p class="text-gray-600 mb-4">${family.description}</p>` : ''}
+                <div class="flex justify-between items-center text-sm text-gray-500">
+                    <span>
+                        <i class="fas fa-calendar ml-1"></i>
+                        ${new Date(family.created_at).toLocaleDateString('ar-EG')}
+                    </span>
+                    <span class="text-blue-600 hover:text-blue-800">
+                        عرض الشجرة
+                        <i class="fas fa-arrow-left mr-1"></i>
+                    </span>
+                </div>
             </div>
-            ${family.description ? `<p class="text-gray-600 mb-4">${family.description}</p>` : ''}
-            <div class="flex justify-between items-center text-sm text-gray-500">
-                <span>
-                    <i class="fas fa-calendar ml-1"></i>
-                    ${new Date(family.created_at).toLocaleDateString('ar-EG')}
-                </span>
-                <span class="text-blue-600 hover:text-blue-800">
-                    عرض الشجرة
-                    <i class="fas fa-arrow-left mr-1"></i>
-                </span>
-            </div>
+            ${currentUser ? `
+                <button 
+                    onclick="event.stopPropagation(); deleteFamily(${family.id}, '${family.name.replace(/'/g, "\\'")}')" 
+                    class="absolute top-4 left-4 text-red-500 hover:text-red-700 transition-colors"
+                    title="حذف العائلة">
+                    <i class="fas fa-trash text-lg"></i>
+                </button>
+            ` : ''}
         </div>
     `).join('');
 }

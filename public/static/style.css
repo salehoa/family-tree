@@ -179,13 +179,13 @@ body {
     font-size: 10px;
     color: #3b82f6;
     text-align: center;
-    margin-top: 6px;
+    margin-top: 1px; /* رفع بمقدار 5px (من 6px إلى 1px) */
     font-weight: 600;
 }
 
 .children-count {
     position: absolute;
-    bottom: -15px;
+    bottom: -10px; /* رفع بمقدار 5px (من -15px إلى -10px) */
     right: 50%;
     transform: translateX(50%);
     background: #3b82f6;
@@ -501,13 +501,13 @@ body {
     
     .member-generation {
         font-size: 8px;
-        margin-top: 4px;
+        margin-top: -1px; /* رفع بمقدار 5px */
     }
     
     .children-count {
         font-size: 10px;
         padding: 1px 6px;
-        bottom: -12px;
+        bottom: -7px; /* رفع بمقدار 5px */
     }
 }
 
@@ -584,14 +584,14 @@ body {
     
     .member-generation {
         font-size: 7px;
-        margin-top: 3px;
+        margin-top: -2px; /* رفع بمقدار 5px */
         padding: 1px 3px;
     }
     
     .children-count {
         font-size: 9px;
         padding: 1px 5px;
-        bottom: -10px;
+        bottom: -5px; /* رفع بمقدار 5px */
     }
 }
 
