@@ -1,6 +1,8 @@
 -- إنشاء مستخدم admin افتراضي (كلمة المرور: admin123)
+-- ملاحظة: في الإصدار الحالي، كلمة المرور مخزنة كنص عادي للتبسيط
+-- في الإنتاج، يجب استخدام bcrypt لتشفير كلمة المرور
 INSERT OR IGNORE INTO users (username, password, role) VALUES 
-  ('admin', '$2a$10$XQqhZz7Z7Z7Z7Z7Z7Z7Z7.Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Zu', 'admin');
+  ('admin', 'admin123', 'admin');
 
 -- إنشاء عائلة تجريبية
 INSERT OR IGNORE INTO families (id, name, description, created_by) VALUES 
