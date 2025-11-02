@@ -7,6 +7,13 @@ let zoomLevel = 1;
 let contextMenuVisible = false;
 let selectedMemberId = null;
 
+// Pan & Drag state
+let isPanning = false;
+let startX = 0;
+let startY = 0;
+let translateX = 0;
+let translateY = 0;
+
 // API Base URL
 const API_BASE = '/api';
 
@@ -254,6 +261,7 @@ function zoomOut() {
 }
 
 function resetZoom() {
+    resetPan();
     autoScaleTree();
 }
 
@@ -261,9 +269,83 @@ function applyZoom() {
     const container = document.getElementById('familyTreeContainer');
     const tree = container.querySelector('.tree-root');
     if (tree) {
-        tree.style.transform = `scale(${zoomLevel})`;
+        tree.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
         tree.style.transformOrigin = 'center center';
     }
+}
+
+// Pan & Drag functions
+function startPan(e) {
+    // Don't start panning if clicking on a member card or context menu
+    if (e.target.closest('.member-card') || e.target.closest('.context-menu')) {
+        return;
+    }
+    
+    isPanning = true;
+    const container = document.getElementById('familyTreeContainer');
+    container.style.cursor = 'grabbing';
+    
+    // Get the starting position
+    if (e.type === 'mousedown') {
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+    } else if (e.type === 'touchstart') {
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+    }
+}
+
+function doPan(e) {
+    if (!isPanning) return;
+    
+    e.preventDefault();
+    
+    let currentX, currentY;
+    
+    if (e.type === 'mousemove') {
+        currentX = e.clientX;
+        currentY = e.clientY;
+    } else if (e.type === 'touchmove') {
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+    }
+    
+    translateX = currentX - startX;
+    translateY = currentY - startY;
+    
+    applyZoom();
+}
+
+function endPan() {
+    if (isPanning) {
+        isPanning = false;
+        const container = document.getElementById('familyTreeContainer');
+        container.style.cursor = 'grab';
+    }
+}
+
+function resetPan() {
+    translateX = 0;
+    translateY = 0;
+    applyZoom();
+}
+
+function enablePanning() {
+    const container = document.getElementById('familyTreeContainer');
+    if (!container) return;
+    
+    container.style.cursor = 'grab';
+    
+    // Mouse events
+    container.addEventListener('mousedown', startPan);
+    container.addEventListener('mousemove', doPan);
+    container.addEventListener('mouseup', endPan);
+    container.addEventListener('mouseleave', endPan);
+    
+    // Touch events
+    container.addEventListener('touchstart', startPan, { passive: false });
+    container.addEventListener('touchmove', doPan, { passive: false });
+    container.addEventListener('touchend', endPan);
 }
 
 function autoScaleTree() {
@@ -271,6 +353,9 @@ function autoScaleTree() {
     const tree = container.querySelector('.tree-root');
     
     if (!tree) return;
+    
+    // Reset pan position
+    resetPan();
     
     // Reset any existing transformations to measure actual size
     tree.style.transform = 'scale(1)';
@@ -479,6 +564,7 @@ function renderFamilyTree() {
     requestAnimationFrame(() => {
         setTimeout(() => {
             autoScaleTree();
+            enablePanning(); // Enable pan & drag functionality
         }, 100);
     });
 }

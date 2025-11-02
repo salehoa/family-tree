@@ -22,6 +22,12 @@ body {
     height: 100%;
     overflow: hidden !important;
     position: relative;
+    cursor: grab;
+    user-select: none;
+}
+
+#familyTreeContainer:active {
+    cursor: grabbing;
 }
 
 /* Horizontal Tree Structure */
