@@ -224,36 +224,83 @@ function showUploadPhotoModal() {
 }
 
 async function uploadPhoto(memberId, file) {
-    const formData = new FormData();
-    formData.append('photo', file);
-    
     try {
-        // Convert file to base64
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('حجم الصورة كبير جداً. الحد الأقصى 5 ميجابايت');
+            return;
+        }
+        
+        // Create image element to compress
+        const img = new Image();
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Read file as data URL
         const reader = new FileReader();
-        reader.onload = async (e) => {
-            const base64 = e.target.result;
-            
-            // Update member with photo URL
-            await axios.put(
-                `${API_BASE}/families/${currentFamilyId}/members/${memberId}`,
-                {
-                    photo_url: base64
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-                        'Content-Type': 'application/json'
+        reader.onload = (e) => {
+            img.onload = async () => {
+                // Calculate new dimensions (max 800px)
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 800;
+                
+                if (width > maxSize || height > maxSize) {
+                    if (width > height) {
+                        height = (height / width) * maxSize;
+                        width = maxSize;
+                    } else {
+                        width = (width / height) * maxSize;
+                        height = maxSize;
                     }
                 }
-            );
+                
+                // Set canvas size and draw image
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Convert to base64 (JPEG with 0.8 quality)
+                const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                
+                try {
+                    // Update member with photo URL
+                    await axios.put(
+                        `${API_BASE}/families/${currentFamilyId}/members/${memberId}`,
+                        {
+                            photo_url: base64
+                        },
+                        {
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+                    
+                    // Reload tree
+                    await loadFamilyTree(currentFamilyId);
+                    alert('تم تحميل الصورة بنجاح');
+                } catch (error) {
+                    alert('فشل تحميل الصورة. حاول مرة أخرى.');
+                    console.error('Upload error:', error);
+                }
+            };
             
-            // Reload tree
-            await loadFamilyTree(currentFamilyId);
-            alert('تم تحميل الصورة بنجاح');
+            img.onerror = () => {
+                alert('فشل قراءة الصورة. تأكد من أن الملف صورة صحيحة.');
+            };
+            
+            img.src = e.target.result;
         };
+        
+        reader.onerror = () => {
+            alert('فشل قراءة الملف');
+        };
+        
         reader.readAsDataURL(file);
     } catch (error) {
-        alert('فشل تحميل الصورة');
+        alert('حدث خطأ أثناء معالجة الصورة');
         console.error('Upload error:', error);
     }
 }
