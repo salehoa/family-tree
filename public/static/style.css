@@ -13,6 +13,13 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Center the tree container */
+#familyTreeContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Horizontal Tree Structure */
 .tree-root {
     padding: 40px;
@@ -24,24 +31,25 @@ body {
 .tree-node-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     position: relative;
     margin-bottom: 40px;
 }
 
-/* Horizontal connector lines */
-.tree-node-wrapper::before {
-    content: '';
-    position: absolute;
-    right: 50%;
-    top: -20px;
-    width: 2px;
-    height: 20px;
-    background-color: #3b82f6;
+/* Vertical line from parent to children */
+.tree-node-wrapper > .member-card {
+    position: relative;
 }
 
-.tree-node-wrapper:first-child::before {
-    display: none;
+.tree-node-wrapper:has(.children-container) > .member-card::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -40px;
+    width: 4px;
+    height: 40px;
+    background-color: #3b82f6;
+    transform: translateX(-50%);
 }
 
 .children-container {
@@ -49,31 +57,32 @@ body {
     flex-direction: row;
     gap: 60px;
     margin-top: 40px;
-    margin-right: 60px;
     position: relative;
+    align-items: flex-start;
 }
 
-/* Horizontal line from parent to children */
+/* Horizontal line connecting siblings */
 .children-container::before {
     content: '';
     position: absolute;
-    right: -30px;
-    top: -20px;
-    width: 30px;
-    height: 2px;
+    left: 0;
+    right: 0;
+    top: -40px;
+    height: 4px;
     background-color: #3b82f6;
 }
 
-/* Vertical line connecting children */
-.children-container::after {
+/* Vertical lines dropping to each sibling */
+.children-container > .tree-node-wrapper::before {
     content: '';
     position: absolute;
-    right: 50%;
-    top: -20px;
-    width: 2px;
-    height: calc(100% + 20px);
+    left: 50%;
+    top: -40px;
+    width: 4px;
+    height: 40px;
     background-color: #3b82f6;
-    transform: translateX(50%);
+    transform: translateX(-50%);
+    z-index: 1;
 }
 
 /* Member card styling */

@@ -232,8 +232,34 @@ function applyZoom() {
     const tree = container.querySelector('.tree-root');
     if (tree) {
         tree.style.transform = `scale(${zoomLevel})`;
-        tree.style.transformOrigin = 'top right';
+        tree.style.transformOrigin = 'top center';
     }
+}
+
+function autoScaleTree() {
+    const container = document.getElementById('familyTreeContainer');
+    const tree = container.querySelector('.tree-root');
+    
+    if (!tree) return;
+    
+    // Reset any existing transformations
+    tree.style.transform = 'scale(1)';
+    
+    // Get dimensions
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    const treeWidth = tree.scrollWidth;
+    const treeHeight = tree.scrollHeight;
+    
+    // Calculate scale to fit both width and height
+    const scaleX = containerWidth / (treeWidth + 80); // Add padding
+    const scaleY = containerHeight / (treeHeight + 80); // Add padding
+    const scale = Math.min(scaleX, scaleY, 1); // Don't scale up, only down
+    
+    // Apply the scale
+    zoomLevel = scale;
+    tree.style.transform = `scale(${scale})`;
+    tree.style.transformOrigin = 'top center';
 }
 
 // API functions
@@ -376,7 +402,10 @@ function renderFamilyTree() {
         </div>
     `;
     
-    applyZoom();
+    // Apply auto-scaling after a brief delay to allow DOM to render
+    setTimeout(() => {
+        autoScaleTree();
+    }, 100);
 }
 
 function renderTreeNode(node) {
