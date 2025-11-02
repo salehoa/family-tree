@@ -28,6 +28,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             hideContextMenu();
         }
     });
+    
+    // Re-scale tree on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        if (familyTree) {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                autoScaleTree();
+            }, 250);
+        }
+    });
 });
 
 // Authentication functions
@@ -223,8 +234,7 @@ function zoomOut() {
 }
 
 function resetZoom() {
-    zoomLevel = 1;
-    applyZoom();
+    autoScaleTree();
 }
 
 function applyZoom() {
@@ -242,24 +252,46 @@ function autoScaleTree() {
     
     if (!tree) return;
     
-    // Reset any existing transformations
+    // Reset any existing transformations to measure actual size
     tree.style.transform = 'scale(1)';
-    
-    // Get dimensions
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-    const treeWidth = tree.scrollWidth;
-    const treeHeight = tree.scrollHeight;
-    
-    // Calculate scale to fit both width and height
-    const scaleX = containerWidth / (treeWidth + 80); // Add padding
-    const scaleY = containerHeight / (treeHeight + 80); // Add padding
-    const scale = Math.min(scaleX, scaleY, 1); // Don't scale up, only down
-    
-    // Apply the scale
-    zoomLevel = scale;
-    tree.style.transform = `scale(${scale})`;
     tree.style.transformOrigin = 'top center';
+    
+    // Force reflow to get accurate measurements
+    container.offsetHeight;
+    
+    // Get dimensions with a small delay to ensure DOM is fully rendered
+    setTimeout(() => {
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        const treeWidth = tree.scrollWidth;
+        const treeHeight = tree.scrollHeight;
+        
+        // Calculate scale to fit both width and height with padding
+        const paddingX = 100; // Horizontal padding
+        const paddingY = 100; // Vertical padding
+        
+        const scaleX = (containerWidth - paddingX) / treeWidth;
+        const scaleY = (containerHeight - paddingY) / treeHeight;
+        
+        // Use the smaller scale to ensure everything fits
+        // Allow slight zoom out if needed (min 0.1)
+        const scale = Math.max(Math.min(scaleX, scaleY, 1), 0.1);
+        
+        console.log('Auto-scale:', {
+            containerWidth,
+            containerHeight,
+            treeWidth,
+            treeHeight,
+            scaleX: scaleX.toFixed(2),
+            scaleY: scaleY.toFixed(2),
+            finalScale: scale.toFixed(2)
+        });
+        
+        // Apply the scale
+        zoomLevel = scale;
+        tree.style.transform = `scale(${scale})`;
+        tree.style.transformOrigin = 'top center';
+    }, 50);
 }
 
 // API functions
@@ -402,10 +434,13 @@ function renderFamilyTree() {
         </div>
     `;
     
-    // Apply auto-scaling after a brief delay to allow DOM to render
-    setTimeout(() => {
-        autoScaleTree();
-    }, 100);
+    // Apply auto-scaling after DOM is fully rendered
+    // Use multiple delays to ensure all images and content are loaded
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            autoScaleTree();
+        }, 100);
+    });
 }
 
 function renderTreeNode(node) {
