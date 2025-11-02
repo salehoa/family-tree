@@ -61,9 +61,8 @@ function setCurrentUser(user, token) {
     
     if (user.role === 'admin') {
         document.getElementById('adminBtn').classList.remove('hidden');
+        document.getElementById('createFamilyBtn').classList.remove('hidden');
     }
-    
-    document.getElementById('createFamilyBtn').classList.remove('hidden');
 }
 
 function logout() {
@@ -683,7 +682,7 @@ function renderFamilies() {
                     </span>
                 </div>
             </div>
-            ${currentUser ? `
+            ${currentUser && currentUser.role === 'admin' ? `
                 <button 
                     onclick="event.stopPropagation(); deleteFamily(${family.id}, '${family.name.replace(/'/g, "\\'")}')" 
                     class="absolute top-4 left-4 text-red-500 hover:text-red-700 transition-colors"
