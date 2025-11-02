@@ -132,6 +132,7 @@ function showCreateFamilyModal() {
 // Context menu functions
 function showContextMenu(memberId, event) {
     event.stopPropagation();
+    event.preventDefault(); // Prevent default touch behavior
     
     if (!currentUser) {
         return;
@@ -140,11 +141,30 @@ function showContextMenu(memberId, event) {
     selectedMemberId = memberId;
     const menu = document.getElementById('contextMenu');
     
-    // Position the menu
-    menu.style.left = event.pageX + 'px';
-    menu.style.top = event.pageY + 'px';
-    menu.classList.add('show');
+    // Get position from touch or mouse event
+    const x = event.touches ? event.touches[0].pageX : event.pageX;
+    const y = event.touches ? event.touches[0].pageY : event.pageY;
     
+    // Position the menu
+    menu.style.left = x + 'px';
+    menu.style.top = y + 'px';
+    
+    // Adjust position if menu goes off screen
+    setTimeout(() => {
+        const menuRect = menu.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        if (menuRect.right > viewportWidth) {
+            menu.style.left = (viewportWidth - menuRect.width - 10) + 'px';
+        }
+        
+        if (menuRect.bottom > viewportHeight) {
+            menu.style.top = (viewportHeight - menuRect.height - 10) + 'px';
+        }
+    }, 10);
+    
+    menu.classList.add('show');
     contextMenuVisible = true;
 }
 
@@ -266,22 +286,42 @@ function autoScaleTree() {
         const treeWidth = tree.scrollWidth;
         const treeHeight = tree.scrollHeight;
         
-        // Calculate scale to fit both width and height with padding
-        const paddingX = 100; // Horizontal padding
-        const paddingY = 100; // Vertical padding
+        // Responsive padding based on screen size
+        const isMobile = window.innerWidth <= 768;
+        const isSmallMobile = window.innerWidth <= 480;
+        
+        let paddingX, paddingY;
+        
+        if (isSmallMobile) {
+            // Extra small screens - minimal padding
+            paddingX = 30;
+            paddingY = 40;
+        } else if (isMobile) {
+            // Mobile/tablet - reduced padding
+            paddingX = 50;
+            paddingY = 60;
+        } else {
+            // Desktop - standard padding
+            paddingX = 100;
+            paddingY = 100;
+        }
         
         const scaleX = (containerWidth - paddingX) / treeWidth;
         const scaleY = (containerHeight - paddingY) / treeHeight;
         
         // Use the smaller scale to ensure everything fits
-        // Allow slight zoom out if needed (min 0.1)
-        const scale = Math.max(Math.min(scaleX, scaleY, 1), 0.1);
+        // Allow more aggressive zoom out on mobile (min 0.05 for mobile, 0.1 for desktop)
+        const minScale = isMobile ? 0.05 : 0.1;
+        const scale = Math.max(Math.min(scaleX, scaleY, 1), minScale);
         
         console.log('Auto-scale:', {
+            device: isSmallMobile ? 'small-mobile' : (isMobile ? 'mobile' : 'desktop'),
             containerWidth,
             containerHeight,
             treeWidth,
             treeHeight,
+            paddingX,
+            paddingY,
             scaleX: scaleX.toFixed(2),
             scaleY: scaleY.toFixed(2),
             finalScale: scale.toFixed(2)
@@ -452,7 +492,8 @@ function renderTreeNode(node) {
         <div class="tree-node-wrapper">
             <div class="member-card ${isAlive ? 'alive' : 'deceased'}" 
                  data-generation="${node.generation}"
-                 onclick="showContextMenu(${node.id}, event)">
+                 onclick="showContextMenu(${node.id}, event)"
+                 ontouchstart="showContextMenu(${node.id}, event)">
                 <div class="member-photo">
                     ${node.photo_url ? 
                         `<img src="${node.photo_url}" alt="${node.first_name}">` :
