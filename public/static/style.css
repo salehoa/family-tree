@@ -90,14 +90,14 @@ body {
     display: none;
 }
 
-/* Vertical lines dropping to each sibling - from horizontal line to cards */
+/* Vertical lines dropping to each sibling - touching horizontal line */
 .children-container > .tree-node-wrapper::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: 0; /* يبدأ من الخط الأفقي */
+    top: -2px; /* يرتفع قليلاً ليلامس الخط الأفقي */
     width: 4px;
-    height: 80px; /* المسافة من الخط الأفقي إلى البطاقات */
+    height: calc(80px + 2px); /* المسافة من الخط الأفقي إلى البطاقات + التعويض */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
@@ -407,8 +407,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: 0; /* يبدأ من الخط الأفقي */
-        height: 60px;
+        top: -2px; /* يرتفع قليلاً ليلامس الخط الأفقي */
+        height: calc(60px + 2px);
     }
     
     .member-card {
@@ -469,8 +469,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: 0; /* يبدأ من الخط الأفقي */
-        height: 50px;
+        top: -1.5px; /* يرتفع قليلاً ليلامس الخط الأفقي */
+        height: calc(50px + 1.5px);
         width: 3px;
     }
     
@@ -545,8 +545,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: 0; /* يبدأ من الخط الأفقي */
-        height: 40px;
+        top: -1px; /* يرتفع قليلاً ليلامس الخط الأفقي */
+        height: calc(40px + 1px);
         width: 2px;
     }
     
@@ -623,8 +623,8 @@ body {
     }
     
     .children-container > .tree-node-wrapper::before {
-        top: 0; /* يبدأ من الخط الأفقي */
-        height: 35px;
+        top: -1px; /* يرتفع قليلاً ليلامس الخط الأفقي */
+        height: calc(35px + 1px);
     }
     
     .member-card {
