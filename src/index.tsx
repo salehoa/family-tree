@@ -547,13 +547,13 @@ app.get('/', (c) => {
                             <i class="fas fa-user-circle text-2xl text-blue-600"></i>
                             <span id="userName" class="text-gray-700 font-semibold"></span>
                         </div>
-                        <button onclick="showChangePasswordModal()" class="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
-                            <i class="fas fa-key"></i>
-                            <span>تغيير كلمة المرور</span>
-                        </button>
                         <button onclick="showAdminPanel()" id="adminBtn" class="hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
                             <i class="fas fa-cog"></i>
                             <span>لوحة الإدارة</span>
+                        </button>
+                        <button onclick="showChangePasswordModal()" class="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fas fa-key"></i>
+                            <span>تغيير كلمة المرور</span>
                         </button>
                         <button onclick="logout()" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
                             <i class="fas fa-sign-out-alt"></i>
