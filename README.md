@@ -26,7 +26,9 @@
 
 ## الروابط
 - **البيئة المحلية**: http://localhost:3000
-- **رابط الوصول العام**: https://3000-iw852boiuz8r3dn6d64id-a402f90a.sandbox.novita.ai
+- **رابط الوصول العام (Sandbox)**: https://3000-iw852boiuz8r3dn6d64id-a402f90a.sandbox.novita.ai
+- **الإنتاج (Cloudflare Pages)**: https://family-tree-app-86z.pages.dev
+- **GitHub Repository**: https://github.com/salehoa/family-tree
 
 ---
 
@@ -310,11 +312,28 @@ curl http://localhost:3000
 
 ### النشر على Cloudflare Pages
 ```bash
+# 1. إنشاء قاعدة بيانات D1
 npx wrangler d1 create family-tree-db
-# تحديث wrangler.jsonc بـ database_id
-npm run db:migrate:prod
-npm run deploy:prod
+
+# 2. تحديث wrangler.jsonc بـ database_id الذي تحصل عليه من الخطوة السابقة
+
+# 3. تطبيق migrations على قاعدة البيانات الإنتاجية
+npx wrangler d1 migrations apply family-tree-db --remote
+
+# 4. إنشاء مشروع Cloudflare Pages
+npx wrangler pages project create family-tree-app --production-branch main
+
+# 5. بناء ونشر المشروع
+npm run build
+npx wrangler pages deploy dist --project-name family-tree-app
 ```
+
+**معلومات النشر الحالي:**
+- **Project Name**: family-tree-app
+- **Production URL**: https://family-tree-app-86z.pages.dev
+- **Database**: family-tree-db (D1)
+- **Database ID**: e859f915-2e95-4320-ad3e-56e90367c5f8
+- **Region**: ENAM
 
 ---
 
@@ -329,7 +348,8 @@ npm run deploy:prod
 - ✅ **دعم اللمس**: مفعّل ومحسّن
 - ✅ **Modal ملء الشاشة**: جميع الأزرار ظاهرة
 - ✅ **السحب والتحريك**: Pan & Drag مفعّل
-- ⏳ **الإنتاج**: جاهز للنشر
+- ✅ **الإنتاج**: منشور على Cloudflare Pages
+- ✅ **قاعدة البيانات**: Cloudflare D1 (e859f915-2e95-4320-ad3e-56e90367c5f8)
 
 **آخر تحديث**: 2025-11-02 (الإصدار 2.6.0 - تصميم عصري حديث 🎨)
 
