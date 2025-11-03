@@ -223,9 +223,9 @@ body {
 
 /* Photo container - Modern Design */
 .member-photo {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    border-radius: 12px;
     margin: 0 auto 16px;
     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     display: flex;
@@ -255,7 +255,7 @@ body {
 }
 
 .member-photo i {
-    font-size: 40px;
+    font-size: 55px;
     color: #3b82f6;
     transition: all 0.3s ease;
 }
@@ -586,8 +586,8 @@ body {
     }
     
     .member-photo {
-        width: 75px;
-        height: 75px;
+        width: 100px;
+        height: 100px;
         border-radius: 10px;
     }
     
@@ -657,8 +657,8 @@ body {
     }
     
     .member-photo {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
         border-width: 2px;
         border-radius: 8px;
     }
@@ -746,8 +746,8 @@ body {
     }
     
     .member-photo {
-        width: 50px;
-        height: 50px;
+        width: 65px;
+        height: 65px;
         border-width: 2px;
         margin-bottom: 8px;
         border-radius: 6px;
@@ -826,8 +826,8 @@ body {
     }
     
     .member-photo {
-        width: 42px;
-        height: 42px;
+        width: 55px;
+        height: 55px;
         margin-bottom: 6px;
         border-radius: 6px;
     }
