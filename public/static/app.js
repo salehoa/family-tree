@@ -918,7 +918,7 @@ function renderTreeNode(node) {
                 <div class="member-info">
                     ${node.birth_date ? `${node.birth_date.substring(0, 4)}` : ''}
                     ${age && isAlive ? ` (${age})` : ''}
-                    ${!isAlive && node.death_date ? `<br>† ${node.death_date.substring(0, 4)}` : ''}
+                    ${!isAlive && node.death_date ? `<br>${node.death_date.substring(0, 4)}` : ''}
                 </div>
                 <div class="member-generation">الجيل ${node.generation + 1}</div>
                 ${hasChildren ? `<div class="children-count">${node.children.length}</div>` : ''}
