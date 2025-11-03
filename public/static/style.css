@@ -191,9 +191,9 @@ body {
 }
 
 .member-card.deceased {
-    border-right: 5px solid #9ca3af;
-    background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
-    opacity: 0.9;
+    border-right: 5px solid #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    opacity: 0.95;
 }
 
 .member-card.deceased::after {
@@ -203,7 +203,7 @@ body {
     position: absolute;
     top: 12px;
     right: 12px;
-    color: #9ca3af;
+    color: #ef4444;
     font-size: 14px;
 }
 

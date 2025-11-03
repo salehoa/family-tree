@@ -413,6 +413,70 @@ async function deleteMember() {
     }
 }
 
+async function markAsAlive() {
+    // حفظ معرّف العضو قبل إخفاء القائمة
+    const memberId = selectedMemberId;
+    hideContextMenu();
+    
+    // التحقق من تسجيل الدخول
+    if (!currentUser) {
+        alert('يجب تسجيل الدخول أولاً');
+        return;
+    }
+    
+    try {
+        await axios.put(
+            `${API_BASE}/families/${currentFamilyId}/members/${memberId}`,
+            { death_date: null },
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        );
+        
+        // Reload tree
+        await loadFamilyTree(currentFamilyId);
+    } catch (error) {
+        alert('فشل تحديث الحالة. تحقق من الصلاحيات.');
+        console.error('Update error:', error);
+    }
+}
+
+async function markAsDeceased() {
+    // حفظ معرّف العضو قبل إخفاء القائمة
+    const memberId = selectedMemberId;
+    hideContextMenu();
+    
+    // التحقق من تسجيل الدخول
+    if (!currentUser) {
+        alert('يجب تسجيل الدخول أولاً');
+        return;
+    }
+    
+    // طلب تاريخ الوفاة
+    const deathYear = prompt('أدخل سنة الوفاة (اختياري):');
+    const deathDate = deathYear ? `${deathYear}-01-01` : new Date().toISOString().split('T')[0];
+    
+    try {
+        await axios.put(
+            `${API_BASE}/families/${currentFamilyId}/members/${memberId}`,
+            { death_date: deathDate },
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            }
+        );
+        
+        // Reload tree
+        await loadFamilyTree(currentFamilyId);
+    } catch (error) {
+        alert('فشل تحديث الحالة. تحقق من الصلاحيات.');
+        console.error('Update error:', error);
+    }
+}
+
 // Zoom functions
 function zoomIn() {
     zoomLevel = Math.min(zoomLevel + 0.1, 3);
@@ -807,6 +871,14 @@ function renderFamilyTree() {
             <div class="context-menu-item" onclick="showUploadPhotoModal()">
                 <i class="fas fa-camera"></i>
                 <span>تحميل صورة</span>
+            </div>
+            <div class="context-menu-item" onclick="markAsAlive()">
+                <i class="fas fa-heartbeat" style="color: #10b981;"></i>
+                <span>تحديد كـ حي</span>
+            </div>
+            <div class="context-menu-item" onclick="markAsDeceased()">
+                <i class="fas fa-cross" style="color: #ef4444;"></i>
+                <span>تحديد كـ متوفى</span>
             </div>
             <div class="context-menu-item danger" onclick="deleteMember()">
                 <i class="fas fa-trash"></i>
