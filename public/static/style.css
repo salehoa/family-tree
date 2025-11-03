@@ -199,9 +199,9 @@ body {
     opacity: 0.95;
 }
 
-/* أيقونة متوفى - صليب أحمر */
+/* أيقونة متوفى - هلال أحمر */
 .member-card.deceased .member-photo::before {
-    content: '\f54c';
+    content: '\f186';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
