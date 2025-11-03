@@ -542,23 +542,45 @@ app.get('/', (c) => {
                             <span>تسجيل الدخول</span>
                         </button>
                     </div>
-                    <div id="userMenu" class="hidden flex items-center gap-3">
-                        <div class="flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-50 px-4 py-2 rounded-xl">
+                    <div id="userMenu" class="hidden relative">
+                        <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 px-4 py-2 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
                             <i class="fas fa-user-circle text-2xl text-blue-600"></i>
                             <span id="userName" class="text-gray-700 font-semibold"></span>
+                            <i class="fas fa-chevron-down text-gray-500 text-sm"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div id="userDropdown" class="hidden absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-fadeIn">
+                            <button onclick="showAdminPanel(); toggleUserDropdown();" id="adminBtnDropdown" class="hidden w-full text-right px-4 py-3 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 flex items-center gap-3 border-b border-gray-100">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-cog text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-gray-800">لوحة الإدارة</div>
+                                    <div class="text-xs text-gray-500">إدارة المستخدمين والصلاحيات</div>
+                                </div>
+                            </button>
+                            
+                            <button onclick="showChangePasswordModal(); toggleUserDropdown();" class="w-full text-right px-4 py-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-cyan-50 transition-all duration-200 flex items-center gap-3 border-b border-gray-100">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-key text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-gray-800">تغيير كلمة المرور</div>
+                                    <div class="text-xs text-gray-500">تحديث كلمة المرور الخاصة بك</div>
+                                </div>
+                            </button>
+                            
+                            <button onclick="logout()" class="w-full text-right px-4 py-3 hover:bg-gradient-to-r hover:from-red-50 hover:to-rose-50 transition-all duration-200 flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-sign-out-alt text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-gray-800">تسجيل الخروج</div>
+                                    <div class="text-xs text-gray-500">إنهاء الجلسة الحالية</div>
+                                </div>
+                            </button>
                         </div>
-                        <button onclick="showAdminPanel()" id="adminBtn" class="hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
-                            <i class="fas fa-cog"></i>
-                            <span>لوحة الإدارة</span>
-                        </button>
-                        <button onclick="showChangePasswordModal()" class="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
-                            <i class="fas fa-key"></i>
-                            <span>تغيير كلمة المرور</span>
-                        </button>
-                        <button onclick="logout()" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>خروج</span>
-                        </button>
                     </div>
                 </div>
             </div>

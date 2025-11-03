@@ -60,7 +60,7 @@ function setCurrentUser(user, token) {
     document.getElementById('userName').textContent = user.username;
     
     if (user.role === 'admin') {
-        document.getElementById('adminBtn').classList.remove('hidden');
+        document.getElementById('adminBtnDropdown').classList.remove('hidden');
         document.getElementById('createFamilyBtn').classList.remove('hidden');
     }
 }
@@ -77,6 +77,21 @@ function logout() {
     
     window.location.reload();
 }
+
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('hidden');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const userMenu = document.getElementById('userMenu');
+    const dropdown = document.getElementById('userDropdown');
+    
+    if (userMenu && dropdown && !userMenu.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
 
 async function login(event) {
     event.preventDefault();
