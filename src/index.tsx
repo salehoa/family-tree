@@ -492,30 +492,38 @@ app.get('/', (c) => {
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         <link href="/static/style.css" rel="stylesheet">
     </head>
-    <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
         <!-- Header -->
-        <header class="bg-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+        <header class="bg-white/80 backdrop-blur-lg shadow-lg border-b border-gray-100 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center">
-                    <div class="flex items-center">
-                        <i class="fas fa-sitemap text-3xl text-blue-600 ml-3"></i>
-                        <h1 class="text-2xl font-bold text-gray-800">عوائل القريتين</h1>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-200">
+                            <i class="fas fa-sitemap text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">عوائل القريتين</h1>
+                            <p class="text-sm text-gray-500">شجرة العائلة الرقمية</p>
+                        </div>
                     </div>
-                    <div id="authButtons" class="flex gap-2">
-                        <button onclick="showLoginModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
-                            <i class="fas fa-sign-in-alt ml-2"></i>
-                            تسجيل الدخول
+                    <div id="authButtons" class="flex gap-3">
+                        <button onclick="showLoginModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>تسجيل الدخول</span>
                         </button>
                     </div>
                     <div id="userMenu" class="hidden flex items-center gap-3">
-                        <span id="userName" class="text-gray-700"></span>
-                        <button onclick="showAdminPanel()" id="adminBtn" class="hidden bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition">
-                            <i class="fas fa-cog ml-2"></i>
-                            لوحة الإدارة
+                        <div class="flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-50 px-4 py-2 rounded-xl">
+                            <i class="fas fa-user-circle text-2xl text-blue-600"></i>
+                            <span id="userName" class="text-gray-700 font-semibold"></span>
+                        </div>
+                        <button onclick="showAdminPanel()" id="adminBtn" class="hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fas fa-cog"></i>
+                            <span>لوحة الإدارة</span>
                         </button>
-                        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
-                            <i class="fas fa-sign-out-alt ml-2"></i>
-                            تسجيل الخروج
+                        <button onclick="logout()" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>خروج</span>
                         </button>
                     </div>
                 </div>
@@ -523,16 +531,19 @@ app.get('/', (c) => {
         </header>
 
         <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <main class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
             <!-- Families Grid -->
-            <div class="mb-6 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-gray-800">
-                    <i class="fas fa-users ml-2"></i>
-                    العائلات
-                </h2>
-                <button onclick="showCreateFamilyModal()" id="createFamilyBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
-                    <i class="fas fa-plus ml-2"></i>
-                    إضافة عائلة جديدة
+            <div class="mb-10 flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2 flex items-center gap-3">
+                        <i class="fas fa-users text-blue-600"></i>
+                        العائلات المسجلة
+                    </h2>
+                    <p class="text-gray-500">اضغط على أي عائلة لعرض شجرة العائلة الكاملة</p>
+                </div>
+                <button onclick="showCreateFamilyModal()" id="createFamilyBtn" class="hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    <span>إضافة عائلة جديدة</span>
                 </button>
             </div>
             
@@ -542,23 +553,35 @@ app.get('/', (c) => {
         </main>
 
         <!-- Login Modal -->
-        <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">تسجيل الدخول</h2>
-                <form onsubmit="login(event)" class="space-y-4">
+        <div id="loginModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-sign-in-alt text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">تسجيل الدخول</h2>
+                    <p class="text-gray-500 mt-2">أدخل بيانات الدخول الخاصة بك</p>
+                </div>
+                <form onsubmit="login(event)" class="space-y-6">
                     <div>
-                        <label class="block text-gray-700 mb-2">اسم المستخدم</label>
-                        <input type="text" id="loginUsername" class="w-full border rounded-lg px-4 py-2" required>
+                        <label class="block text-gray-700 font-semibold mb-3">اسم المستخدم</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="loginUsername" class="w-full border-2 border-gray-200 focus:border-blue-500 rounded-xl px-12 py-3 transition-colors outline-none" placeholder="أدخل اسم المستخدم" required>
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-gray-700 mb-2">كلمة المرور</label>
-                        <input type="password" id="loginPassword" class="w-full border rounded-lg px-4 py-2" required>
+                        <label class="block text-gray-700 font-semibold mb-3">كلمة المرور</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="loginPassword" class="w-full border-2 border-gray-200 focus:border-blue-500 rounded-xl px-12 py-3 transition-colors outline-none" placeholder="أدخل كلمة المرور" required>
+                        </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold">
                             تسجيل الدخول
                         </button>
-                        <button type="button" onclick="hideLoginModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg transition">
+                        <button type="button" onclick="hideLoginModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl transition-all duration-200 font-semibold">
                             إلغاء
                         </button>
                     </div>
@@ -590,37 +613,48 @@ app.get('/', (c) => {
         </div>
 
         <!-- Family Tree Modal -->
-        <div id="familyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
-            <div class="w-full h-full flex flex-col bg-white">
-                <!-- Header with controls -->
-                <div class="flex-shrink-0 flex justify-between items-center px-6 py-4 border-b bg-white shadow-sm">
-                    <h2 id="familyModalTitle" class="text-2xl font-bold text-gray-800 flex-shrink-0"></h2>
+        <div id="familyModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 animate-fadeIn">
+            <div class="w-full h-full flex flex-col bg-gradient-to-br from-gray-50 to-blue-50">
+                <!-- Header with controls - Modern Design -->
+                <div class="flex-shrink-0 flex justify-between items-center px-6 py-5 border-b border-gray-200/50 bg-white/95 backdrop-blur-xl shadow-xl">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-sitemap text-xl text-white"></i>
+                        </div>
+                        <div>
+                            <h2 id="familyModalTitle" class="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"></h2>
+                            <p class="text-sm text-gray-500">شجرة العائلة التفاعلية</p>
+                        </div>
+                    </div>
                     <div class="flex gap-2 items-center flex-wrap">
-                        <button onclick="zoomIn()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="تكبير">
-                            <i class="fas fa-search-plus"></i>
-                            <span class="hidden sm:inline">تكبير</span>
+                        <button onclick="zoomIn()" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 group" title="تكبير">
+                            <i class="fas fa-search-plus group-hover:scale-110 transition-transform"></i>
+                            <span class="hidden sm:inline font-semibold">تكبير</span>
                         </button>
-                        <button onclick="zoomOut()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="تصغير">
-                            <i class="fas fa-search-minus"></i>
-                            <span class="hidden sm:inline">تصغير</span>
+                        <button onclick="zoomOut()" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 group" title="تصغير">
+                            <i class="fas fa-search-minus group-hover:scale-110 transition-transform"></i>
+                            <span class="hidden sm:inline font-semibold">تصغير</span>
                         </button>
-                        <button onclick="resetZoom()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="إعادة ضبط">
-                            <i class="fas fa-redo"></i>
-                            <span class="hidden sm:inline">إعادة ضبط</span>
+                        <button onclick="resetZoom()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 group" title="إعادة ضبط">
+                            <i class="fas fa-redo group-hover:rotate-180 transition-transform duration-500"></i>
+                            <span class="hidden sm:inline font-semibold">إعادة ضبط</span>
                         </button>
-                        <button onclick="showAddMemberModal()" id="addMemberBtn" class="hidden bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
-                            <i class="fas fa-user-plus"></i>
-                            <span class="hidden sm:inline">إضافة فرد</span>
+                        <button onclick="showAddMemberModal()" id="addMemberBtn" class="hidden bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 group">
+                            <i class="fas fa-user-plus group-hover:scale-110 transition-transform"></i>
+                            <span class="hidden sm:inline font-semibold">إضافة فرد</span>
                         </button>
-                        <button onclick="hideFamilyModal()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition flex items-center gap-2" title="إغلاق">
-                            <i class="fas fa-times"></i>
-                            <span class="hidden sm:inline">إغلاق</span>
+                        <button onclick="hideFamilyModal()" class="bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2 group" title="إغلاق">
+                            <i class="fas fa-times group-hover:rotate-90 transition-transform duration-300"></i>
+                            <span class="hidden sm:inline font-semibold">إغلاق</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Tree container - takes remaining space -->
-                <div id="familyTreeContainer" class="flex-1 overflow-hidden bg-gray-50">
+                <div id="familyTreeContainer" class="flex-1 overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 relative">
+                    <!-- Decorative background pattern -->
+                    <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 25px 25px, #3b82f6 2%, transparent 0%), radial-gradient(circle at 75px 75px, #6366f1 2%, transparent 0%); background-size: 100px 100px;"></div>
+                    
                     <!-- Family tree will be rendered here -->
                 </div>
             </div>

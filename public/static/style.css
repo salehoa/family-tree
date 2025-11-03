@@ -1,7 +1,39 @@
-/* Custom styles for Family Tree App - Horizontal Layout */
+/* Custom styles for Family Tree App - Modern Design */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+    animation: slideIn 0.4s ease-out;
+}
+
+.animate-scaleIn {
+    animation: scaleIn 0.3s ease-out;
 }
 
 .tree-node {
@@ -103,18 +135,20 @@ body {
     z-index: 1;
 }
 
-/* Member card styling */
+/* Member card styling - Modern Design */
 .member-card {
     min-width: 180px;
     max-width: 180px;
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
-    border: 2px solid #e5e7eb;
+    border: 2px solid rgba(226, 232, 240, 0.8);
+    backdrop-filter: blur(10px);
+    animation: scaleIn 0.3s ease-out;
 }
 
 /* Ancestor card (generation 0) - expands for long names */
@@ -125,54 +159,107 @@ body {
 }
 
 .member-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3);
-    border-color: #3b82f6;
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25), 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: #60a5fa;
+    background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
 }
 
 .member-card.alive {
-    border-right: 4px solid #10b981;
+    border-right: 5px solid #10b981;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.member-card.alive::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
 }
 
 .member-card.deceased {
-    border-right: 4px solid #6b7280;
-    background: #f9fafb;
+    border-right: 5px solid #9ca3af;
+    background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
+    opacity: 0.9;
 }
 
-/* Photo container */
+.member-card.deceased::after {
+    content: '\f54c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Photo container - Modern Design */
 .member-photo {
     width: 90px;
     height: 90px;
-    border-radius: 12px;
-    margin: 0 auto 12px;
-    background: #dbeafe;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border: 3px solid #3b82f6;
+    border: 4px solid #60a5fa;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.member-card:hover .member-photo {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
 .member-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.member-card:hover .member-photo img {
+    transform: scale(1.1);
 }
 
 .member-photo i {
     font-size: 40px;
     color: #3b82f6;
+    transition: all 0.3s ease;
+}
+
+.member-card:hover .member-photo i {
+    transform: scale(1.1);
+    color: #2563eb;
 }
 
 .member-name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #1f2937;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
     text-align: center;
     margin-bottom: 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Ancestor name - wraps for long names */
@@ -190,37 +277,60 @@ body {
 }
 
 .member-generation {
-    font-size: 10px;
-    color: #3b82f6;
+    font-size: 11px;
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+    color: white;
     text-align: center;
-    margin-top: 1px; /* رفع بمقدار 5px (من 6px إلى 1px) */
-    font-weight: 600;
+    margin-top: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    letter-spacing: 0.5px;
 }
 
 .children-count {
     position: absolute;
-    bottom: -10px; /* رفع بمقدار 5px (من -15px إلى -10px) */
+    bottom: -12px;
     right: 50%;
     transform: translateX(50%);
-    background: #3b82f6;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 600;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 4px 12px;
+    border-radius: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+    border: 2px solid white;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-/* Context menu */
+.children-count::before {
+    content: '\f007';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 10px;
+}
+
+/* Context menu - Modern Design */
 .context-menu {
     position: fixed;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 8px 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 8px;
     z-index: 1000;
-    min-width: 180px;
+    min-width: 200px;
     display: none;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    animation: scaleIn 0.2s ease-out;
 }
 
 .context-menu.show {
@@ -228,35 +338,51 @@ body {
 }
 
 .context-menu-item {
-    padding: 10px 16px;
+    padding: 12px 16px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: #374151;
+    gap: 12px;
+    color: #475569;
     font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    margin-bottom: 2px;
 }
 
 .context-menu-item:hover {
-    background: #f3f4f6;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    transform: translateX(-2px);
+    padding-right: 18px;
 }
 
 .context-menu-item:active {
-    background: #e5e7eb;
+    background: #e2e8f0;
+    transform: scale(0.98);
 }
 
 .context-menu-item i {
-    width: 20px;
+    width: 24px;
+    font-size: 16px;
     color: #3b82f6;
+    transition: transform 0.2s ease;
+}
+
+.context-menu-item:hover i {
+    transform: scale(1.1);
 }
 
 .context-menu-item.danger {
-    color: #dc2626;
+    color: #ef4444;
+}
+
+.context-menu-item.danger:hover {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
 }
 
 .context-menu-item.danger i {
-    color: #dc2626;
+    color: #ef4444;
 }
 
 /* Mobile context menu improvements */
@@ -357,23 +483,27 @@ body {
     text-align: right;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Modern Design */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    border-radius: 10px;
+    border: 2px solid #f8fafc;
+    transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    border-color: #e2e8f0;
 }
 
 /* Loading animation */

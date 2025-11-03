@@ -664,30 +664,49 @@ function renderFamilies() {
     }
     
     grid.innerHTML = families.map(family => `
-        <div class="tree-node bg-white rounded-xl shadow-lg p-6 hover:shadow-xl relative">
-            <div class="cursor-pointer" onclick="showFamilyModal(${family.id})">
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-sitemap text-3xl text-blue-600 ml-3"></i>
-                    <h3 class="text-xl font-bold text-gray-800">${family.name}</h3>
+        <div class="tree-node bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 relative group overflow-hidden border border-gray-100 hover:border-blue-200 cursor-pointer animate-fadeIn" onclick="showFamilyModal(${family.id})">
+            <!-- Decorative gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+            
+            <!-- Content -->
+            <div class="relative z-10">
+                <div class="flex items-start mb-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                        <i class="fas fa-sitemap text-2xl text-white"></i>
+                    </div>
+                    <div class="mr-4 flex-1">
+                        <h3 class="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300 mb-1">${family.name}</h3>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-calendar ml-1"></i>
+                            <span>${new Date(family.created_at).toLocaleDateString('ar-EG')}</span>
+                        </div>
+                    </div>
                 </div>
-                ${family.description ? `<p class="text-gray-600 mb-4">${family.description}</p>` : ''}
-                <div class="flex justify-between items-center text-sm text-gray-500">
-                    <span>
-                        <i class="fas fa-calendar ml-1"></i>
-                        ${new Date(family.created_at).toLocaleDateString('ar-EG')}
-                    </span>
-                    <span class="text-blue-600 hover:text-blue-800">
-                        عرض الشجرة
-                        <i class="fas fa-arrow-left mr-1"></i>
-                    </span>
+                
+                ${family.description ? `
+                    <p class="text-gray-600 mb-5 text-sm leading-relaxed">${family.description}</p>
+                ` : ''}
+                
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600 text-sm"></i>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-700">شجرة العائلة</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-blue-600 group-hover:gap-3 transition-all duration-300">
+                        <span class="text-sm font-semibold">عرض التفاصيل</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </div>
                 </div>
             </div>
+            
             ${currentUser && currentUser.role === 'admin' ? `
                 <button 
                     onclick="event.stopPropagation(); deleteFamily(${family.id}, '${family.name.replace(/'/g, "\\'")}')" 
-                    class="absolute top-4 left-4 text-red-500 hover:text-red-700 transition-colors"
+                    class="absolute top-4 left-4 w-10 h-10 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-xl transition-all duration-200 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 hover:scale-110"
                     title="حذف العائلة">
-                    <i class="fas fa-trash text-lg"></i>
+                    <i class="fas fa-trash"></i>
                 </button>
             ` : ''}
         </div>
