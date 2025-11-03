@@ -128,9 +128,9 @@ body {
     content: '';
     position: absolute;
     left: 50%;
-    top: 0; /* يبدأ من الخط الأفقي */
+    top: -87px; /* يبدأ من الخط الأفقي (قبل padding-top) */
     width: 4px;
-    height: 87px; /* ينزل إلى البطاقة */
+    height: 87px; /* ينزل بطول 87px ليصل إلى البطاقة */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
