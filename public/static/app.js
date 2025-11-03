@@ -110,6 +110,58 @@ function hideLoginModal() {
     document.getElementById('loginPassword').value = '';
 }
 
+function showChangePasswordModal() {
+    document.getElementById('changePasswordModal').classList.remove('hidden');
+}
+
+function hideChangePasswordModal() {
+    document.getElementById('changePasswordModal').classList.add('hidden');
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+}
+
+async function changePassword(event) {
+    event.preventDefault();
+    
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // التحقق من تطابق كلمة المرور الجديدة
+    if (newPassword !== confirmPassword) {
+        alert('كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقتين');
+        return;
+    }
+    
+    // التحقق من طول كلمة المرور
+    if (newPassword.length < 6) {
+        alert('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        return;
+    }
+    
+    try {
+        const response = await axios.post(`${API_BASE}/auth/change-password`, {
+            currentPassword,
+            newPassword
+        }, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+        
+        alert('تم تغيير كلمة المرور بنجاح');
+        hideChangePasswordModal();
+    } catch (error) {
+        if (error.response?.data?.error) {
+            alert(error.response.data.error);
+        } else {
+            alert('فشل تغيير كلمة المرور. حاول مرة أخرى.');
+        }
+        console.error('Change password error:', error);
+    }
+}
+
 function showFamilyModal(familyId) {
     currentFamilyId = familyId;
     document.getElementById('familyModal').classList.remove('hidden');

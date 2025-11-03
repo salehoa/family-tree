@@ -88,6 +88,36 @@ app.post('/api/auth/login', async (c) => {
   })
 })
 
+// تغيير كلمة المرور (للمستخدم نفسه)
+app.post('/api/auth/change-password', authMiddleware, async (c) => {
+  const user = c.get('user')
+  const { currentPassword, newPassword } = await c.req.json()
+  
+  if (!currentPassword || !newPassword) {
+    return c.json({ error: 'Current password and new password are required' }, 400)
+  }
+  
+  if (newPassword.length < 6) {
+    return c.json({ error: 'Password must be at least 6 characters' }, 400)
+  }
+  
+  // التحقق من كلمة المرور الحالية
+  const dbUser = await c.env.DB.prepare(
+    'SELECT password FROM users WHERE id = ?'
+  ).bind(user.id).first()
+  
+  if (!dbUser || dbUser.password !== currentPassword) {
+    return c.json({ error: 'Current password is incorrect' }, 401)
+  }
+  
+  // تحديث كلمة المرور
+  await c.env.DB.prepare(
+    'UPDATE users SET password = ? WHERE id = ?'
+  ).bind(newPassword, user.id).run()
+  
+  return c.json({ success: true, message: 'Password changed successfully' })
+})
+
 // الحصول على جميع العائلات
 app.get('/api/families', async (c) => {
   const families = await c.env.DB.prepare(
@@ -517,6 +547,10 @@ app.get('/', (c) => {
                             <i class="fas fa-user-circle text-2xl text-blue-600"></i>
                             <span id="userName" class="text-gray-700 font-semibold"></span>
                         </div>
+                        <button onclick="showChangePasswordModal()" class="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i class="fas fa-key"></i>
+                            <span>تغيير كلمة المرور</span>
+                        </button>
                         <button onclick="showAdminPanel()" id="adminBtn" class="hidden bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center gap-2">
                             <i class="fas fa-cog"></i>
                             <span>لوحة الإدارة</span>
@@ -582,6 +616,50 @@ app.get('/', (c) => {
                             تسجيل الدخول
                         </button>
                         <button type="button" onclick="hideLoginModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl transition-all duration-200 font-semibold">
+                            إلغاء
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div id="changePasswordModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-key text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold bg-gradient-to-r from-blue-500 to-cyan-600 bg-clip-text text-transparent">تغيير كلمة المرور</h2>
+                    <p class="text-gray-500 mt-2">أدخل كلمة المرور الحالية والجديدة</p>
+                </div>
+                <form onsubmit="changePassword(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-3">كلمة المرور الحالية</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="currentPassword" class="w-full border-2 border-gray-200 focus:border-blue-500 rounded-xl px-12 py-3 transition-colors outline-none" placeholder="أدخل كلمة المرور الحالية" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-3">كلمة المرور الجديدة</label>
+                        <div class="relative">
+                            <i class="fas fa-key absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="newPassword" class="w-full border-2 border-gray-200 focus:border-blue-500 rounded-xl px-12 py-3 transition-colors outline-none" placeholder="أدخل كلمة المرور الجديدة (6 أحرف على الأقل)" minlength="6" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-3">تأكيد كلمة المرور الجديدة</label>
+                        <div class="relative">
+                            <i class="fas fa-check-circle absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="password" id="confirmPassword" class="w-full border-2 border-gray-200 focus:border-blue-500 rounded-xl px-12 py-3 transition-colors outline-none" placeholder="أعد إدخال كلمة المرور الجديدة" required>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold">
+                            تغيير كلمة المرور
+                        </button>
+                        <button type="button" onclick="hideChangePasswordModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl transition-all duration-200 font-semibold">
                             إلغاء
                         </button>
                     </div>
