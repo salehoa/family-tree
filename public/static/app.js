@@ -877,7 +877,7 @@ function renderFamilyTree() {
                 <span>تحديد كـ حي</span>
             </div>
             <div class="context-menu-item" onclick="markAsDeceased()">
-                <i class="fas fa-cross" style="color: #ef4444;"></i>
+                <i class="fas fa-moon" style="color: #ef4444;"></i>
                 <span>تحديد كـ متوفى</span>
             </div>
             <div class="context-menu-item danger" onclick="deleteMember()">
