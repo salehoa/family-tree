@@ -172,17 +172,20 @@ body {
     background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
 
-.member-card.alive::before {
+/* مؤشر حي - نقطة خضراء نابضة */
+.member-card.alive .member-photo::before {
     content: '';
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 10px;
-    height: 10px;
+    top: -8px;
+    right: -8px;
+    width: 12px;
+    height: 12px;
     background: #10b981;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    border: 2px solid white;
     animation: pulse 2s ease-in-out infinite;
+    z-index: 10;
 }
 
 @keyframes pulse {
@@ -196,15 +199,26 @@ body {
     opacity: 0.95;
 }
 
-.member-card.deceased::after {
+/* أيقونة متوفى - صليب أحمر */
+.member-card.deceased .member-photo::before {
     content: '\f54c';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
     color: #ef4444;
-    font-size: 14px;
+    font-size: 12px;
+    border: 2px solid #ef4444;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 }
 
 /* Photo container - Modern Design */
