@@ -10,7 +10,7 @@
     {
       "binding": "DB",
       "database_name": "family-tree-db",
-      "database_id": "local-dev-db"
+      "database_id": "e859f915-2e95-4320-ad3e-56e90367c5f8"
     }
   ]
 }
