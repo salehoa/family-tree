@@ -112,9 +112,10 @@ body {
     /* Calculate positions based on first and last child centers */
     left: 90px; /* نصف عرض البطاقة (180px / 2) */
     right: 90px; /* نصف عرض البطاقة */
-    top: 0; /* في نهاية الخط النازل من الأب */
+    top: -87px; /* يجب أن يكون في الأعلى ليتصل بالخطوط العمودية */
     height: 4px;
     background-color: #3b82f6;
+    z-index: 0;
 }
 
 /* For single child, hide the horizontal line */
