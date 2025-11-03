@@ -88,18 +88,19 @@ body {
     content: '';
     position: absolute;
     left: calc(50% + 2px); /* تحريك لليمين 2px (كان 5px، تحرك 3px لليسار) */
-    bottom: -87px; /* نزول إضافي 2px (من -85px إلى -87px) */
+    bottom: -89px; /* إنزال 2px إضافية (من -87px إلى -89px) */
     width: 4px;
-    height: 87px; /* زيادة الطول 2px (من 85px إلى 87px) */
+    height: 89px; /* زيادة الطول 2px (من 87px إلى 89px) */
     background-color: #3b82f6;
     transform: translateX(-50%);
+    z-index: -1; /* خلف شارة عدد الأبناء */
 }
 
 .children-container {
     display: flex;
     flex-direction: row;
     gap: 60px; /* إعادة إلى 60px */
-    margin-top: 87px; /* زيادة 2px إضافية (من 85px إلى 87px) */
+    margin-top: 89px; /* زيادة 2px إضافية (من 87px إلى 89px) */
     padding-top: 87px; /* المسافة من الخط الأفقي إلى البطاقات */
     position: relative;
     align-items: flex-start;
@@ -310,6 +311,7 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
+    z-index: 2; /* أمام الخط العمودي */
 }
 
 .children-count::before {
