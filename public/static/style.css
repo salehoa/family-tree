@@ -112,7 +112,7 @@ body {
     /* Calculate positions based on first and last child centers */
     left: 90px; /* نصف عرض البطاقة (180px / 2) */
     right: 90px; /* نصف عرض البطاقة */
-    top: -87px; /* يجب أن يكون في الأعلى ليتصل بالخطوط العمودية */
+    top: 0; /* في نهاية الخط النازل من الأب */
     height: 4px;
     background-color: #3b82f6;
     z-index: 0;
@@ -123,14 +123,14 @@ body {
     display: none;
 }
 
-/* Vertical lines dropping to each sibling - touching horizontal line */
+/* Vertical lines dropping to each sibling - from horizontal line to cards */
 .children-container > .tree-node-wrapper::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: -87px; /* تعديل لمطابقة padding-top الجديد */
+    top: 0; /* يبدأ من الخط الأفقي */
     width: 4px;
-    height: 87px; /* زيادة 2px إضافية */
+    height: 87px; /* ينزل من الخط الأفقي إلى البطاقة */
     background-color: #3b82f6;
     transform: translateX(-50%);
     z-index: 1;
